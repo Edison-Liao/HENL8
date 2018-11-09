@@ -1,0 +1,2 @@
+layui.define(["form","common","jquery_md5"],function(e){var t=layui.$,m=(layui.layer,layui.common,{DATA_NO:"暂无数据",DATA_NULL:"无",STATUS_ACTIVE:"启用",STATUS_BLOCK:"停用"}),o=function a(e,m){var a={IsEncryption:m||!1,Method:e||"",Sign:t.md5("Timestamp="+layui.common.getTimeOffset()+"+Method="+(e||"")),Timestamp:layui.common.getTimeOffset()};return a},n="暂无数据!";e("consts",t.extend(m,{basePostData:o},{tabelNoneText:n}))});
+//# sourceMappingURL=src/maps/consts.js.map

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>组织结构管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href='../../../layuiadmin/style/iconfont/iconfont.css' media="all">
+    <link rel="stylesheet" href="../../../layuiadmin/style/zTree/zTreeStyle/zTreeStyle.css" media="all">
+</head>
+
+<body>
+
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="layui-col-md4">
+                <div class="layui-card">
+                    <div class="layui-elem-quote layui-card-header">公司组织结构信息</div>
+                    <div class="layui-card-body">
+                        <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" id='refresh' data-tips='刷新信息'>
+                                <i class="layui-icon layui-icon-refresh"></i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm layui-btn-disabled" id='showDepartment' disabled data-tips='新增部门'>
+                                <i class="icon huipayfont huipay-tianjiabumen" style="font-weight: 600"></i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm layui-btn-disabled" id='showPosition' disabled data-tips='新增职位'>
+                                <i class="icon huipayfont huipay-tianjiazhiwei" style="font-weight: 600"></i>
+                            </button>
+
+                            <button class="layui-btn layui-btn-primary layui-btn-sm layui-btn-disabled" id='showStaff' disabled data-tips='新增人员'>
+                                <i class="layui-icon layui-icon-user"></i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm layui-btn-disabled" disabled id='lower' data-tips='下移排序'>
+                                <i class="icon huipayfont huipay-lower"></i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm layui-btn-disabled" disabled id='upper' data-tips='上移排序'>
+                                <i class="icon huipayfont huipay-upper"></i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm layui-btn-disabled" disabled id='delet' data-tips='删除节点'>
+                                <i class="layui-icon layui-icon-delete"></i>
+                            </button>
+                        </div>
+                        <div id='treeOrgan' class="ztree">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md8">
+                <div class="layui-card">
+                    <div class="layui-elem-quote layui-card-header" id='formTitle'>公司基础信息</div>
+                    <div class="layui-card-body">
+                        <!-- form表格公司 -->
+                        <form class="layui-form" lay-filter="layuiadmin-form-useradmin" id="organFrom" style="padding: 20px 0 0 0;">
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label">公司名称</label>
+                                <div class="layui-input-inline">
+                                    <p id='companyName'>四川海力</p>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">公司编码</label>
+                                <div class="layui-input-inline">
+                                    <p id='companyCode'>HENL</p>
+                                </div>
+                            </div>
+                        </form>
+                        <!-- form表格部门 -->
+                        <form class="layui-form layui-hide" lay-filter="DepartmentFrom" id="DepartmentFrom" style="padding: 20px 0 0 0;">
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label">上级部门</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="topName" disabled placeholder="请输入用户名" autocomplete="off" class="layui-input layui-btn-disabled topName">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">部门名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Name" lay-verify="required" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">正式名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="NormalizedName" lay-verify="required" placeholder="请输入正式名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">部门编码</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Code" lay-verify="required" placeholder="请输入部门编码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label">主体类型</label>
+                                <div class="layui-input-inline">
+                                    <input type="radio" name="IsMainBody" value="true" title="是" checked>
+                                    <input type="radio" name="IsMainBody" value="false" title="否">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label "></label>
+                                <button class="layui-btn layui-btn-primary" id='reset' type="reset" lay-filter="reset">取消</button>
+                                <button class="layui-btn submit" lay-submit lay-filter="DepartmentFrom">立即提交</button>
+                            </div>
+                        </form>
+                        <!-- form表单职位 -->
+                        <form class="layui-form layui-hide" lay-filter="PositionFrom" id="PositionFrom" style="padding: 20px 0 0 0;">
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label">上级部门</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="topName" disabled placeholder="请输入用户名" autocomplete="off" class="layui-input layui-btn-disabled topName">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">职位名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Name" lay-verify="required" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">职位正式名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="NormalizedName" lay-verify="required" placeholder="请输入用户密码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">职位编码</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Code" lay-verify="required" placeholder="请重复用户密码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label "></label>
+                                <button class="layui-btn layui-btn-primary reset" type="reset" lay-filter="reset">取消</button>
+
+                                <button class="layui-btn submit" lay-submit lay-filter="PositionFrom">立即提交</button>
+                            </div>
+                        </form>
+                        <!-- form表单员工 -->
+                        <form class="layui-form layui-hide" lay-filter="staffFrom" id="staffFrom" style="padding: 20px 0 0 0;">
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label">所属职位</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="topName" disabled placeholder="职位名称" autocomplete="off" class="layui-input layui-disabled topName">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label ">主要职位</label>
+                                <div class="layui-input-inline">
+                                    <input type="checkbox" name="IsStaffMainPosition" value="true" lay-skin="switch" lay-text="是|否">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label ">员工名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Name" lay-verify="required" placeholder="请输入员工名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label">正式名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="NormalizedName" lay-verify="required" placeholder="请输入员工正式名称" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label">员工编码</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Code" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label ">员工工号</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="JobNumber" lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label ">出生日期</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Birthdate" lay-verify="required" placeholder="" autocomplete="off" class="layui-input" id='Birthdate'>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label ">员工性别</label>
+                                <div class="layui-input-inline">
+                                    <input type="radio" name="Gender" value="true" title="男" checked>
+                                    <input type="radio" name="Gender" value="false" title="女">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label">注册用户</label>
+                                <div class="layui-input-inline">
+                                    <input type="checkbox" lay-filter="IsRegisterUser" value="true" name="IsRegisterUser" lay-skin="switch" lay-text="是|否">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">备注信息</label>
+                                <div class="layui-input-block" style="max-width: 520px">
+                                    <textarea name="Description" placeholder="请输入" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <!-- 注册用户(显示隐藏) -->
+                            <div class='iccUserBox' style="display: none">
+                                <div class="layui-form-item layui-inline">
+                                    <label class="layui-form-label">显示名称</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="DisplayName" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-inline">
+                                    <label class="layui-form-label">关联信息Key</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="ProviderKey" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-inline">
+                                    <label class="layui-form-label">注册密码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="Password" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-inline">
+                                    <label class="layui-form-label ">重复密码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="ConfirmPassword" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-inline">
+                                    <label class="layui-form-label ">用户分组</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="Portrait" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-inline">
+                                    <label class="layui-form-label">用户邮箱</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="Email" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-inline">
+                                    <label class="layui-form-label ">手机号码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="PhoneNumber" lay-verify="" placeholder="" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-block">
+                                    <label class="layui-form-label ">账户备注信息</label>
+                                    <div class="layui-input-block" style="max-width: 520px">
+                                        <textarea name="DescriptionIcc" placeholder="请输入" class="layui-textarea"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 注册用户结束 -->
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label "></label>
+                                <button class="layui-btn layui-btn-primary" id='reset' type="reset" lay-filter="reset">取消</button>
+                                <button class="layui-btn submit" lay-submit lay-filter="staffFrom">立即提交</button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    <!-- 弹出层 -->
+    <script src="../../../layuiadmin/layui/layui.js"></script>
+    <script src="../../../layuiadmin/platform/organ.js"></script>
+    <script>
+
+    </script>
+</body>
+
+</html>

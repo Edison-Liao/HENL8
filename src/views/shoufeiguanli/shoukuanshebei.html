@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>用户管理</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+</head>
+
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-elem-quote layui-row ">
+        <!-- 添加 -->
+        <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+          <form class="layui-form layui-form-pane" action="javascript:;">
+            <div class="layui-form-item">
+              <!--
+              <div>
+                <label class="layui-form-label">网点名称</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="BusinessHall" id="BusinessHall" lay-verify="required" value="" autocomplete="off" class="layui-input" />  
+                </div>
+                <label class="layui-form-label">网点编号</label>
+                <div class="layui-input-inline">
+                  <input type="text" name="BusinessHall" id="BusinessHall" lay-verify="required" value="" autocomplete="off" class="layui-input" />   
+                </div> 
+              </div> 
+              <button class="layui-btn LAY-shebei-search-submit" lay-filter="LAY-shebei-search-submit" id="LAY-shebei-search-submit" name="LAY-shebei-search-submit">
+                <i class="layui-icon">&#xe615;</i> 查询
+              </button>
+              <a>
+                 高级查询
+              </a>
+              -->
+              <button class="layui-btn layuiadmin-btn-shoukuanAdd" data-type="add">添加</button>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+      <div class="layui-card-body">
+        <table id="LAY-shoukuanmanageTable" lay-filter="LAY-shoukuanmanageTable"></table>
+        <div id='page'></div>
+        <script type="text/html" id="imgTpl"> 
+          <img style="display: inline-block; width: 50%; height: 100%;" src= {{ d.avatar }}>
+        </script>
+        <script type="text/html" id="LAY-shebeiTable-barOperation">
+          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+        </script>
+      </div>
+    </div>
+  </div>
+  <!-- 弹出层 -->
+  <div id="lock-from" lay-filter="lock-from" class="layui-form" style="border-top: 1px solid #ccc;display: none">
+
+    <div class="layui-row">
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">营业网点名称</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="text" name="BusinessHall_Name" id="BusinessHall_Name" lay-verify="required" value="" disabled class="layui-input"
+        />
+      </div>
+      <div class="layui-col-sm2">
+        <button class="layui-btn LAY-wangdian-search-submit" lay-filter="LAY-wangdian-search-submit" id="LAY-wangdian-search-submit"
+          name="LAY-wangdian-search-submit">
+          <i class="layui-icon">&#xe615;</i> 查询
+        </button>
+      </div>
+    </div>
+
+    <div class="layui-row">
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">收款设备编码</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="text" name="Coding" id="Coding" lay-verify="required" value="" autocomplete="off" class="layui-input" />
+      </div>
+
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">公司编码</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="text" name="CompanyCoding" lay-verify="required" value="" autocomplete="off" class="layui-input" />
+      </div>
+    </div>
+
+    <div class="layui-row">
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">描述</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="text" name="Description" lay-verify="required" value="" autocomplete="off" class="layui-input" />
+      </div>
+
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">收款设备名称</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="text" name="Name" lay-verify="required" value="" autocomplete="off" class="layui-input" />
+      </div>
+    </div>
+
+    <div class="layui-row">
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">特征标识（Mac)</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="text" name="Mac" lay-verify="required" value="" autocomplete="off" class="layui-input" />
+      </div>
+
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">收款设备状态</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="checkbox" name="Status" lay-skin="switch" id="status" lay-filter="status" />
+      </div>
+    </div>
+    <div class="layui-row">
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">排序号</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="text" name="SortNum" lay-verify="required" autocomplete="off" value="" class="layui-input" />
+      </div>
+
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">指定营业员</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="checkbox" name="FixedUserFlag" lay-skin="switch" id="FixedUserFlag" lay-filter="FixedUserFlag" />
+      </div>
+    </div>
+    <fieldset class="layui-elem-field" style="margin: 20px;">
+      <legend>固定营业员</legend>
+      <div class="layui-field-box">
+        <form class="layui-form layui-form-pane" action="javascript:;">
+          <div class="layui-form-item">
+            <label class="layui-form-label">选择营业员</label>
+            <div class="layui-input-inline">
+              <select name="P1" lay-filter="province" id="province" disabled="true">
+                <option></option>
+              </select>
+            </div>
+            <div class="layui-input-inline">
+              <select name="C1" lay-filter="city" id="city" disabled="true">
+                <option></option>
+              </select>
+            </div>
+            <div class="layui-input-inline">
+              <select name="A1" lay-filter="area" id="area" disabled="true">
+                <option></option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </fieldset>
+
+    <div class="layui-form-item layui-hide">
+      <input type="button" lay-submit lay-filter="LAY-shebei-add-submit" id="LAY-shebei-add-submit" value="确认" />
+    </div>
+  </div>
+
+  <div id="lock-from-BusinessHall" lay-filter="lock-from-BusinessHall" class="layui-form" style="border-top: 1px solid #ccc;display: none">
+    <fieldset class="layui-elem-field" style="margin: 20px;">
+      <div class="layui-row">
+        <div class="layui-col-sm12">
+          <table id="LAY-yingyewangdian_SKTable" lay-filter="LAY-yingyewangdian_SKTable"></table>
+        </div>
+      </div>
+    </fieldset>
+    <div class="layui-form-item layui-hide">
+      <input type="button" lay-submit lay-filter="LAY-wangdian-confirm-submit" id="LAY-wangdian-confirm-submit" value="确认">
+    </div>
+  </div>
+  <script src="../../../layuiadmin/layui/layui.js"></script>
+  <script src="../../../layuiadmin/shoufeiguanli/shoukuanshebei.js"></script>
+</body>
+
+</html>

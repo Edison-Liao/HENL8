@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>用户授权管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href='../../../layuiadmin/style/iconfont/iconfont.css' media="all">
+    <link rel="stylesheet" href="../../../layuiadmin/style/zTree/zTreeStyle/zTreeStyle.css" media="all">
+
+</head>
+
+<body>
+    <div class="layui-fluid">
+        <div class="layui-row layui-col-space5">
+            <div class="layui-col-md4">
+                <div class="layui-tab layui-tab-brief">
+                    <ul class="layui-tab-title">
+                        <div class="layui-elem-quote layui-card-header">用户列表</div>
+                    </ul>
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <div class=" layui-card-header">
+                                <li class="layui-this">组织机构</li>
+                                <li>用户列表</li>
+                            </div>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">
+                                <div id='treeOrganUser' class="ztree"></div>
+                            </div>
+                            <div class="layui-tab-item">
+                                <table id="userAuthTable" lay-filter="userAuthTable"></table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md8">
+                <div class="layui-tab layui-tab-brief">
+                    <ul class="layui-tab-title">
+                        <div class="layui-elem-quote layui-card-header" id='formTitle'>授权点</div>
+                    </ul>
+                    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">数据访问授权</li>
+                            <li>功能访问授权</li>
+                            <li>用户角色关系关联</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show">
+                                <div id='treeOrgan' class="ztree"></div>
+                                <button class="layui-btn layui-btn-sm  layui-btn-disabled" disabled id="accessOrganSub">提交</button>
+                            </div>
+                            <div class="layui-tab-item">
+                                <div id="treeAccessRight" class="ztree"></div>
+                                <button class="layui-btn layui-btn-sm  layui-btn-disabled" disabled id="accessRightSub">提交</button>
+                            </div>
+                            <div class="layui-tab-item">
+                                <div id='roleTree' class="ztree"></div>
+                                <button class="layui-btn layui-btn-sm  layui-btn-disabled" disabled id="accessRoleSub">提交</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- 弹出层 -->
+    <script src="../../../layuiadmin/layui/layui.js"></script>
+
+    <script src="../../../layuiadmin/platform/userauth.js"></script>
+    <!-- <script src='../../../layuiadmin/lib/jquery.ztree.core.js'></script> -->
+</body>
+
+</html>

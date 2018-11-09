@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>价格管理</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+</head>
+
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-row">
+            <div class="layui-col-md4">
+                <div class="layui-card">
+                    <div class="layui-elem-quote layui-card-header">价格管理管理</div>
+                    <div class="layui-card-body">
+                        <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" id='addPriceType' data-tips='添加价格类型'>
+                            <i class="layui-icon">&#xe654;</i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" id='edtPriceType' data-tips='修改价格类型'>
+                            <i class="layui-icon">&#xe642;</i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" id='delPriceType' data-tips='删除价格类型'>
+                            <i class="layui-icon">&#xe640;</i>
+                            </button>
+                        </div>
+                        <div id='treeOrgan'>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md8">
+                <div class="layui-card">
+                    <div class="layui-elem-quote layui-card-header" id='formTitle'>价格详情</div>
+                    <div class="layui-card-body">
+                        <!-- form角色分组 -->
+                        <div class="layui-form " lay-filter="PriceTypeFrom" id="PriceTypeFrom" style="padding: 20px 0 0 0;">
+                            <div class="layui-row">
+                              <div class="layui-col-sm2">
+                                <label class="layui-form-label ">价格类型名称</label>
+                              </div>
+                              <div class="layui-col-sm4">
+                                <input type="text" name="Name" disabled autocomplete="off" class="layui-input">
+                              </div>
+
+                              <div class="layui-col-sm2">
+                                <label class="layui-form-label">价格类型编码</label>
+                              </div>
+                              <div class="layui-col-sm4">
+                                <input type="text" name="Coding" disabled value="" autocomplete="off" class="layui-input" />
+                              </div>
+                            </div>
+                            <div class="layui-row">
+                              <div class="layui-col-sm2">
+                                <label class="layui-form-label">月限购气额度</label>
+                              </div>
+                              <div class="layui-col-sm4">
+                                <input type="text" name="MonthLimitGas" disabled lay-verify="required" value="" autocomplete="off" class="layui-input" />
+                              </div>
+                              <div class="layui-col-sm2">
+                                <label class="layui-form-label">年限购气额度</label>
+                              </div>
+                              <div class="layui-col-sm4">
+                                <input type="text" name="YearLimitGas" disabled lay-verify="required" value="" autocomplete="off" class="layui-input" />
+                              </div>
+                            </div>
+                            <div class="layui-row">
+                              <div class="layui-col-sm2">
+                                <label class="layui-form-label ">价格类型状态</label>
+                              </div>
+                              <div class="layui-col-sm4">
+                                <input type="text" name="Status" disabled autocomplete="off" class="layui-input">
+                              </div>
+
+                              <div class="layui-col-sm2">
+                                <label class="layui-form-label ">排序号</label>
+                              </div>
+                              <div class="layui-col-sm4">
+                                <input type="text" name="SortNum" disabled autocomplete="off" class="layui-input">
+                              </div>
+                            </div>
+                            <br/>
+                            <div class="layui-row">
+                              <div class="layui-col-sm2">
+                                <label class="layui-form-label">备注信息</label>
+                              </div>
+                              <div class="layui-col-sm10">
+                                <textarea name="Description" disabled class="layui-textarea"></textarea>
+                              </div>
+                            </div>
+                            <!--
+                            <div class="layui-row">
+                              <div class="layui-col-sm-offset3 layui-form-item layui-inline">
+                                  <label class="layui-form-label "></label>
+                                  <button class="layui-btn">取消</button>
+                                  <button class="layui-btn submit" lay-submit lay-filter="PriceTypeFrom">立即提交</button>
+                              </div>
+                            </div>
+                            -->
+                            <div class="layui-elem-quote layui-row ">
+                              <div layui-card-header" id='formTitle'>价格版本列表</div>
+                              <!-- 添加 -->
+                            </div>
+                            <div class="layui-card-body">
+                              <div class="layui-btn-group">
+                                <button class="layui-btn layui-btn-primary layui-btn-sm" id='addPriceVersion' data-tips='添加价格版本'>
+                                <i class="layui-icon">&#xe654;</i>
+                                </button>
+                            </div>
+                              <table id="LAY-jiagebanbenTable" lay-filter="LAY-jiagebanbenTable"></table>
+                            </div>
+                        </div>
+                        <!-- form角色 -->
+                        <div class="layui-form layui-hide" lay-filter="staffFrom" id="staffFrom" style="padding: 20px 0 0 0;">
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label">上级分组</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="topName" disabled placeholder="暂无" autocomplete="off" class="layui-input layui-btn-disabled topName">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">角色名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Name" lay-verify="required" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">角色编码</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Coding" lay-verify="required" placeholder="请输入角色编码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">备注信息</label>
+                                <div class="layui-input-block" style="max-width: 300px">
+                                    <textarea name="Description" placeholder="请输入" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label "></label>
+                                <button class="layui-btn" type="reset" lay-filter="LAY-user-front-submit">取消</button>
+
+                                <button class="layui-btn submit" lay-submit lay-filter="staffFrom">立即提交</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+    </div>
+    <!-- 弹出层 -->
+    <div id="lock-from" lay-filter="lock-from" class="layui-form" style="border-top: 1px solid #ccc;display: none">
+          
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label ">价格类型名称</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="Name" lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">价格类型编码</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="Coding" lay-verify="required" value="" autocomplete="off" class="layui-input" />
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label ">价格类型状态</label>
+        </div>
+        <div class="layui-col-sm4">
+          <select name="Status" lay-verify="required">
+            <option value=""></option>
+            <option value="normal">启用</option>
+            <option value="discarded">停用</option>
+          </select>
+        </div>
+
+        
+        <div class="layui-col-sm2">
+          <label class="layui-form-label ">排序号</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="SortNum"  autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">月限购气额度</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="MonthLimitGas" lay-verify="required" value="" autocomplete="off" class="layui-input" />
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">年限购气额度</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="YearLimitGas" lay-verify="required" value="" autocomplete="off" class="layui-input" />
+        </div>
+      </div>
+      <br/>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">备注信息</label>
+        </div>
+        <div class="layui-col-sm10">
+          <textarea name="Description"  class="layui-textarea"></textarea>
+        </div>
+      </div>
+
+      <div class="layui-form-item layui-hide">
+          <input type="button" lay-submit lay-filter="LAY-jiageleixing-add-submit" id="LAY-jiageleixing-add-submit" value="确认">
+      </div>
+    </div>
+
+    <div id="lock-detail-from" lay-filter="lock-detail-from" class="layui-form" style="border-top: 1px solid #ccc;display: none">
+          
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label ">基础价格</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="BasePrice" lay-verify="required" class="layui-input"/>
+        </div>
+
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">是否有阶梯</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="checkbox" name="IsLadder" lay-skin="switch" />
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label ">价格阶梯类型</label>
+        </div>
+        <div class="layui-col-sm4">
+          <select name="PriceLadderType" >
+            <option value=""></option>
+            <option value="NatureYear">自然年</option>
+            <option value="Cycle">周期</option>
+          </select>
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label ">阶梯周期</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="LadderCycleValue" class="layui-input">
+        </div>
+      </div>
+
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">阶梯有效时间</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" class="layui-input" name="LadderDatetime" id="LadderDatetime">
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">价格有效时间</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="PriceDateTime" id="PriceDateTime" lay-verify="required" class="layui-input" />
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">是否打折</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="checkbox" name="IsSale" lay-skin="switch" />
+          
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">是否缴纳滞纳金</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="checkbox" name="IsSurcharge" lay-skin="switch" />       
+        </div>
+      </div>
+      
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">阶梯1气量</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="LadderGas1"  autocomplete="off" class="layui-input" />
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">阶梯1价格</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="LadderPrice1"  autocomplete="off" class="layui-input" />
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">阶梯2气量</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="LadderGas2"  autocomplete="off" class="layui-input" />
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">阶梯2价格</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="LadderPrice2" autocomplete="off" class="layui-input" />
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">阶梯3气量</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="LadderGas3"  autocomplete="off" class="layui-input" />
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">阶梯3价格</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="LadderPrice3" autocomplete="off" class="layui-input" />
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">阶梯4气量</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="LadderGas4" l autocomplete="off" class="layui-input" />
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">阶梯4价格</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="LadderPrice4" autocomplete="off" class="layui-input" />
+        </div>
+      </div>
+
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">备注</label>
+        </div>
+        <div class="layui-col-sm10">
+          <input type="text" name="Description" class="layui-input" />
+        </div>
+        
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">1档增量</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="PersonLadderAdd1"  class="layui-input" />
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">2档增量</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="PersonLadderAdd2"  class="layui-input" />
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">3档增量</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="PersonLadderAdd3" class="layui-input" />
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">4档增量</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="PersonLadderAdd4" class="layui-input" />
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">滞纳金类型</label>
+        </div>
+        <div class="layui-col-sm4">
+          <select name="priceSurcharge" >
+            <option value=""></option>
+            <option value="FixedValue">固定金额</option>
+            <option value="Proportion">百分比</option>
+          </select>
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">基础人口数</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="BasePersonCount"  class="layui-input" />
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">滞纳金开始时间</label>
+        </div>
+        <div class="layui-col-sm4">
+          <select name="PriceSurchargeStar" >
+            <option value=""></option>
+            <option value="Finance">按账务日</option>
+            <option value="Entering">按录入日</option>
+          </select>
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">滞纳金金额</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="PriceSurchargeValue" class="layui-input" />
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">滞纳金延迟月</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="PriceSurchargeDelayMonth" class="layui-input" />
+        </div>
+        <div class="layui-col-sm2">
+          <label class="layui-form-label">滞纳金延迟天数</label>
+        </div>
+        <div class="layui-col-sm4">
+          <input type="text" name="PriceSurchargeDelayDay" class="layui-input" />
+        </div>
+      </div>
+
+      <div class="layui-form-item layui-hide">
+          <input type="button" lay-submit lay-filter="LAY-jiagebanben-add-submit" id="LAY-jiagebanben-add-submit" value="确认">
+      </div>
+    </div>
+  </div>
+    
+
+  </div>
+  <script type="text/html" id="LAY-jiagebanbenTable-barOperation">
+    <a class="layui-btn layui-btn-xs " lay-event="detail"><i class="layui-icon layui-icon-read"></i>查看</a>
+  </script>
+  <script src="../../../layuiadmin/layui/layui.js"></script>
+  <script src="../../../layuiadmin/xitongguanli/jiageguanli.js"></script>
+</body>
+
+</html> 

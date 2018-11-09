@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>角色信息管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href='../../../layuiadmin/style/iconfont/iconfont.css' media="all">
+</head>
+
+<body>
+    <div class="layui-fluid">
+        <div class="layui-row">
+            <div class="layui-col-md4">
+                <div class="layui-card">
+                    <div class="layui-elem-quote layui-card-header">角色信息管理</div>
+                    <div class="layui-card-body">
+                        <div class="layui-btn-group">
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" id='refresh' data-tips='刷新信息'>
+                                <i class="layui-icon layui-icon-refresh"></i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" id='showDepartment' data-tips='新增角色分组'>
+                                <i class="layui-icon">&#xe654;</i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" id='showStaff' data-tips='新增角色'>
+                                <i class="layui-icon layui-icon-user"></i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm layui-btn-disabled" disabled id='lower' data-tips='下移排序'>
+                                <i class="icon huipayfont huipay-lower"></i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm layui-btn-disabled" disabled id='upper' data-tips='上移排序'>
+                                <i class="icon huipayfont huipay-upper"></i>
+                            </button>
+                            <button class="layui-btn layui-btn-primary layui-btn-sm" id='delet' data-tips='删除节点'>
+                                <i class="layui-icon layui-icon-delete"></i>
+                            </button>
+                        </div>
+                        <div id='treeOrgan'>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md8">
+                <div class="layui-card">
+                    <div class="layui-elem-quote layui-card-header" id='formTitle'>新增分组信息</div>
+                    <div class="layui-card-body">
+
+
+                        <!-- form角色分组 -->
+                        <div class="layui-form " lay-filter="DepartmentFrom" id="DepartmentFrom" style="padding: 20px 0 0 0;">
+
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">角色组名</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Name" lay-verify="required" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">组名编码</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Code" lay-verify="required" placeholder="组名编码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">备注信息</label>
+                                <div class="layui-input-block" style="max-width: 300px">
+                                    <textarea name="Description" placeholder="请输入" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label "></label>
+                                <button class="layui-btn">取消</button>
+                                <button class="layui-btn submit" lay-submit lay-filter="DepartmentFrom">立即提交</button>
+                            </div>
+                        </div>
+                        <!-- form角色 -->
+                        <div class="layui-form layui-hide" lay-filter="staffFrom" id="staffFrom" style="padding: 20px 0 0 0;">
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label">上级分组</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="topName" disabled placeholder="暂无" autocomplete="off" class="layui-input layui-btn-disabled topName">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">角色名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Name" lay-verify="required" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">角色编码</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="Code" lay-verify="required" placeholder="请输入角色编码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item layui-block">
+                                <label class="layui-form-label ">备注信息</label>
+                                <div class="layui-input-block" style="max-width: 300px">
+                                    <textarea name="Description" placeholder="请输入" class="layui-textarea"></textarea>
+                                </div>
+                            </div>
+                            <div class="layui-form-item layui-inline">
+                                <label class="layui-form-label "></label>
+                                <button class="layui-btn" type="reset" lay-filter="LAY-user-front-submit">取消</button>
+
+                                <button class="layui-btn submit" lay-submit lay-filter="staffFrom">立即提交</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- 弹出层 -->
+    <script src="../../../layuiadmin/layui/layui.js"></script>
+    <script src="../../../layuiadmin/platform/role.js"></script>
+    <script>
+
+    </script>
+</body>
+
+</html>

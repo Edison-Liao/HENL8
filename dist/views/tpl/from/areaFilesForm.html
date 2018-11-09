@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>区域档案新增或编辑</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+</head>
+
+<body>
+    <div class="layui-form" lay-filter="layuiadmin-form-areafiles" id="layuiadmin-form-areafiles" style="padding: 20px 50px 0 0;">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">区域类型</label>
+            <div class="layui-input-inline">
+                <select name="AreaType" lay-verify="required" id='AreaType'>
+                    <!-- Area, Street, Village, Building, Unit, Floor, Room -->
+                    <!-- <option value="Area">区域</option>
+                    <option value="Street">街道</option>
+                    <option value="Village">小区</option>
+                    <option value="Building">楼栋</option>
+                    <option value="Unit">单元</option>
+                    <option value="Floor">楼层</option>
+                    <option value="Room">房号</option> -->
+                </select>
+            </div>
+            <!-- <div class="layui-input-inline">
+                <input type="text" name="AreaType" lay-verify="required" placeholder="请输入区域类型" autocomplete="off" class="layui-input">
+            </div> -->
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">区域名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="Name" lay-verify="required" placeholder="请输入区域名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">区域编码</label>
+            <div class="layui-input-inline">
+                <input type="text" name="Coding" lay-verify="required" placeholder="请输入区域编码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">所属公司编码(10位)</label>
+            <div class="layui-input-inline">
+                <input type="text" name="CompanyCoding" placeholder="所属公司编码(10位)" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">所属公司名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="CompanyName" placeholder="请输入所属公司名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">区域状态</label>
+            <div class="layui-input-inline">
+                <select name="Status" lay-verify="required" id='Status'>
+                    <option value="Normal">启用</option>
+                    <option value="Discarded">停用</option>
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">上级区域</label>
+            <div class="layui-input-inline">
+                <input type="text" name="Pid" placeholder="请输入上级区域" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">排序号</label>
+            <div class="layui-input-inline">
+                <input type="text" name="SortNum" lay-verify="number" placeholder="请输入排序号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">描述说明</label>
+            <div class="layui-input-block">
+                <textarea name="Description" placeholder="请输入描述说明" class="layui-textarea"></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <input type="button" lay-submit lay-filter="LAY-area-files-submit" id="LAY-area-files-submit" value="确认">
+        </div>
+    </div>
+
+    <script src="../../../layuiadmin/layui/layui.js"></script>
+    <script>
+        layui.config({
+            base: '../../../layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use(['index', 'useradmin', 'form', 'utils'], function () {
+            var $ = layui.$,
+                form = layui.form,
+                utils = layui.utils;
+            var params = utils.getRequest(),
+                passParams;
+
+            if (params.type === "create") {
+                passParams = JSON.parse(decodeURIComponent(params.areaTypes));
+
+                // 赋值区域类型
+                $('#AreaType').append('<option value=""></option>');
+                for (var i in passParams) {
+                    $('#AreaType').append('<option value= ' + passParams[i].Value + '>' + passParams[i].Text + '</option>');
+                }
+                form.render('select');
+            }
+            if (params.type === "edit") {
+                passParams = { areaTypes: JSON.parse(decodeURIComponent(params.areaTypes)), data: JSON.parse(decodeURIComponent(params.data)) };
+
+                var areaTypeArr = passParams.areaTypes
+
+                // 赋值区域类型
+                $('#AreaType').append('<option value=""></option>');
+                for (var i in areaTypeArr) {
+                    $('#AreaType').append('<option value= ' + areaTypeArr[i].Value + '>' + areaTypeArr[i].Text + '</option>');
+                }
+                form.render('select');
+
+                // 赋值给编辑框
+                var passFields = $.extend({}, passParams.data[0], { AreaType: passParams.data[0].AreaType, Status: parseInt(passParams.data[0].Status, 10) === 1 ? "Normal" : "Discarded" });
+                form.val("layuiadmin-form-areafiles", passFields);
+
+            }
+
+            console.log(passParams, 'passParams')
+
+            // var areaFilesOfForm = {
+            //     init: function () {
+            //         this.AreaFilesForm();
+            //     },
+            //     AreaFilesForm: function () {
+            //         $.ajax({
+            //             type: "get",
+            //             url: layui.setter.baseUrl + "/api/User/groups",
+            //             async: true,
+            //             dataType: "json",
+            //             headers: {
+            //                 Accept: "application/json",
+            //                 "Content-Type": "application/json"
+            //             },
+            //             success: function (data) {
+            //                 layer.closeAll();
+            //                 console.log(data);
+            //                 if (data.IsSucceed) {
+            //                     var selectData = data.Result
+            //                     $('#areaStatus').append('<option value=""></option>');
+            //                     for (var i in selectData) {
+            //                         $('#areaStatus').append('<option value= ' + selectData[i].Value + '>' + selectData[i].Text + '</option>');
+            //                     }
+            //                     form.render('select');
+            //                 } else {
+            //                     layer.msg("获取用户类型失败" + data, { icon: 5 });
+            //                 }
+            //             },
+            //             error: function (err) {
+            //                 layer.closeAll();
+            //                 layer.msg("数据操作失败", { icon: 5 });
+            //             }
+            //         });
+            //     }
+            // }
+            // areaFilesOfForm.init();
+        })
+    </script>
+</body>
+
+</html>

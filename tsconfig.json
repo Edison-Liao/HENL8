@@ -1,0 +1,14 @@
+{
+  "files": [
+    "src/layuiadmin/main.ts",
+    "src/layuiadmin/greet.ts",
+    "src/layuiadmin/login.ts"
+  ],
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "target": "es5",
+    "removeComments": true, //删除注释
+    "typeRoots": ["./typings"],
+    "types": ["jquery", "layui"]
+  }
+}

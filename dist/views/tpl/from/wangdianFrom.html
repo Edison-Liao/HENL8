@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>营业网点信息</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+</head>
+
+<body>
+    <div class="layui-form" lay-filter="lock-from" id="layuiadmin-form-wangdianInfo" style="padding: 20px 0 0 0;">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">营业网点编码</label>
+            <div class="layui-input-inline">
+                <input type="text" id="I_WD_Coding" name="I_WD_Coding" lay-verify="required"  value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">营业网点名称</label>
+            <div class="layui-input-inline">
+                <input type="text" id="I_WD_Name" name="I_WD_Name" lay-verify="required"  value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">公司编码</label>
+            <div class="layui-input-inline">
+                <input type="text" id="I_WD_CompanyCoding" name="I_WD_CompanyCoding" lay-verify="required" placeholder="请输入编码"value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">地址</label>
+            <div class="layui-input-inline">
+                <input type="text" id="I_WD_Addr" name="I_WD_Addr" lay-verify="required" placeholder="请输入地址" value="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">联系电话</label>
+            <div class="layui-input-inline">
+                <div class="layui-input-inline">
+                <input type="text" id="I_WD_Tels" name="I_WD_Tels" lay-verify="required" placeholder="请输入联系电话" value="" autocomplete="off" class="layui-input">
+            </div>
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">办公时间</label>
+            <div class="layui-input-inline">
+                <input type="text" id="I_WD_WorkTimeInfo" name="I_WD_WorkTimeInfo"  placeholder="请输入办公时间" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">排序号</label>
+            <div class="layui-input-inline">
+                <input type="text" id="I_WD_SortNum" name="I_WD_SortNum"  placeholder="请输入排箫号" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">备注</label>
+            <div class="layui-input-inline">
+                <input type="text" name="I_WD_Description"  placeholder="请输入备注" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">附件资料</label>
+            <div class="layui-input-inline">
+                <input type="text" name="PhoneNumber"   autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <input type="button" lay-submit lay-filter="LAY-wangdian-add-submit" id="LAY-wangdian-add-submit" value="确认">
+        </div>
+    </div>
+
+    <script src="../../../layuiadmin/layui/layui.js"></script>
+    <script>
+        
+        layui.use(['layer'], function(){
+        var layer=layui.layer;  
+        var router = layui.router();
+        var $ = layui.$;    
+        console.info(router.search.name);
+        $("#I_WD_Name").text(router.search.name);
+            
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>添加收款设备</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+</head>
+
+<body>
+    <div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 20px 0 0 0;">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">设备编码</label>
+            <div class="layui-input-inline">
+                <input type="text" name="DisplayName" placeholder="请输入设备编码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">设备名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="Account" lay-verify="required" autocomplete="off" placeholder="请输入设备名称" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">特征标识(MAC)</label>
+            <div class="layui-input-inline">
+                <input type="password" name="Password" lay-verify="required" placeholder="请输入用户密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">是否固定使用人</label>
+            <div class="layui-input-inline">
+                <input type="password" name="ConfirmPassword" lay-verify="required" placeholder="请重复用户密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">排序号</label>
+            <div class="layui-input-inline">
+                <select name="UserGroupClassify" id='userGroupSelect' lay-verify="required">
+
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">备注</label>
+            <div class="layui-input-inline">
+                <input type="text" name="PhoneNumber" lay-verify="phone" placeholder="请输入备注" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">附件资料</label>
+            <div class="layui-input-inline">
+                <input type="text" name="PhoneNumber" lay-verify="phone" placeholder="附件资料" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <input type="button" lay-submit lay-filter="LAY-user-front-submit" id="LAY-user-front-submit" value="确认">
+        </div>
+    </div>
+
+    <script src="../../../layuiadmin/layui/layui.js"></script>
+    <script>
+        layui.config({
+            base: '../../../layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use(['index', 'useradmin', 'form'], function () {
+            var $ = layui.$,
+                form = layui.form;
+            var userUserClassifyForm = {
+                init: function () {
+                    this.UserClassify();
+                },
+                UserClassify: function () {
+                    $.ajax({
+                        type: "get",
+                        url: layui.setter.baseUrl + "/api/User/groups",
+                        async: true,
+                        dataType: "json",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json"
+                        },
+                        success: function (data) {
+                            layer.closeAll();
+                            console.log(data);
+                            if (data.IsSucceed) {
+                                var selectData = data.Result
+                                $('#userGroupSelect').append('<option value=""></option>');
+                                for (var i in selectData) {
+                                    $('#userGroupSelect').append('<option value= ' + selectData[i].Value + '>' + selectData[i].Text + '</option>');
+                                }
+                                form.render('select');
+                            } else {
+                                layer.msg("获取用户类型失败" + data, { icon: 5 });
+                            }
+                        },
+                        error: function (err) {
+                            layer.closeAll();
+                            layer.msg("数据操作失败", { icon: 5 });
+                        }
+                    });
+                }
+            }
+            userUserClassifyForm.init()
+        })
+    </script>
+</body>
+
+</html>

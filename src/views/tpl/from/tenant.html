@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>添加用户</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+</head>
+
+<body>
+    <div class="layui-form" lay-filter="layuiadmin-form-useradmin" id="layuiadmin-form-useradmin" style="padding: 20px 0 0 0;">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">公司名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="ComName" lay-verify="required" placeholder="请输入公司名称" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">公司编码</label>
+            <div class="layui-input-inline">
+                <input type="text" name="ComCoding" lay-verify="required" placeholder="请输入10位公司编码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">公司密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="ComPassword" lay-verify="required" placeholder="请输入用户密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">sass平台密码</label>
+            <div class="layui-input-inline">
+                <input type="password" name="SassPassword" lay-verify="required" placeholder="sass平台密码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">sass平台有效期</label>
+            <div class="layui-input-inline">
+                <input name="SassExpire" id='SassExpire' lay-verify="required" placeholder="请选择日期" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">公司数据加密秘钥</label>
+            <div class="layui-input-inline">
+                <input type="text" name="ComDataKey" placeholder="请输入号码" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">公司短信加密秘钥</label>
+            <div class="layui-input-inline">
+                <input type="text" name="ComMsgKey" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">所在省名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="ProvinceName" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">所在市名称</label>
+            <div class="layui-input-inline">
+                <input type="text" name="CityName" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-hide">
+            <input type="button" lay-submit lay-filter="LAY-user-front-submit" id="LAY-user-front-submit" value="确认">
+        </div>
+    </div>
+
+    <script src="../../../layuiadmin/layui/layui.js"></script>
+    <script>
+        layui.config({
+            base: '../../../layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use(['index', 'laydate', 'form', 'common'], function () {
+            var $ = layui.$,
+                laydate = layui.laydate,
+                common = layui.common,
+                form = layui.form;
+            laydate.render({
+                elem: "#SassExpire"
+                //value: "1990-08-18"
+            });
+
+            var datastr = decodeURIComponent(window.location.search)
+            var dataObj = common.getRequest(datastr)
+            if (dataObj) {
+                form.val("layuiadmin-form-useradmin", {
+                    "ComName": dataObj.ComName || '',
+                    "ComCoding": dataObj.ComCoding,
+                    'ComPassword': dataObj.ComPassword,
+                    "SassPassword": dataObj.SassPassword || '',
+                    "SassExpire": dataObj.SassExpire || '',
+                    "ComDataKey": dataObj.ComDataKey || '',
+                    "ComMsgKey": dataObj.ComMsgKey || '',
+                    "ProvinceName": dataObj.ProvinceName || '',
+                    "CityName": dataObj.CityName || '',
+                })
+            }
+
+
+        })
+    </script>
+</body>
+
+</html>
