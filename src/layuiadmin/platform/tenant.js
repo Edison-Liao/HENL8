@@ -14,15 +14,8 @@ layui
         common = layui.common,
         table = layui.table;
       layui.haderSerch("#headerSerch", {
-        isRenderdate: { render: "请选择日期" },
-        data: [
-          { key: "关键字1" },
-          { isrender: "范围" },
-          { demo: "德玛" }
-          // { demo1: "德玛1" },
-          // { demo2: "德玛2" },
-          // { demo3: "德玛3" }
-        ]
+        isRenderdate: { Datetime: "请选择日期" },
+        data: [{ key: "查询关键字" }]
       });
       //获取
       dataBen = consts.basePostData("CompanyPageSearch");
@@ -42,13 +35,13 @@ layui
           Sign: consts.basePostData("CompanyPageSearch").Sign,
           Method: consts.basePostData("CompanyPageSearch").Method,
           Timestamp: consts.basePostData("CompanyPageSearch").Timestamp,
-          "Data.DatetimeBegin": Data.DatetimeBegin,
-          "Data.DatetimeEnd": Data.DatetimeEnd,
-          "Data.PageIndex": Data.PageIndex,
-          "Data.PageSize": Data.PageSize
+          "Data.DatetimeBegin": "20180511",
+          "Data.DatetimeEnd": "20191230"
+          // "Data.PageIndex": Data.PageIndex,
+          // "Data.PageSize": Data.PageSize
         },
         parseData: layui.setter.parseData,
-        // request: layui.setter.request,
+        request: layui.setter.request,
         cols: [
           [
             {
@@ -99,7 +92,7 @@ layui
           ]
         ],
         loading: true,
-        // page: {},
+        page: {},
         limit: 10,
         text: {
           none: consts.tabelNoneText //默认：无数据。注：该属性为 layui 2.2.5 开始新增
@@ -109,15 +102,24 @@ layui
       form.on("submit(searchbtn)", function(data) {
         var field = data.field;
         console.log(field, "搜索数据");
-        //执行重载
-        // table.reload("LAY-user-manage", {
-        //   where: field
-        // });
+        var DatetimeBegin = common.formatRequertDate(
+          field.Datetime.split("~")[0]
+        );
+        var DatetimeEnd = common.formatRequertDate(
+          field.Datetime.split("~")[1]
+        );
+        table.reload("LAY-user-manage", {
+          where: {
+            "Data.Key": field.key,
+            "Data.DatetimeBegin": DatetimeBegin || "20180511",
+            "Data.PageIndex": 1,
+            "Data.PageSize": 10
+          }
+        });
       });
       //监听工具条
       table.on("tool(LAY-user-manage)", function(obj) {
         var data = obj.data;
-
         if (obj.event === "del") {
           tenant.event.del(data);
         } else if (obj.event === "edit") {
@@ -144,8 +146,7 @@ layui
                 icon: 3
               },
               function() {
-                console.log("确认", data);
-                organ.server.delet({ Id: data.Id });
+                tenant.server.delet({ Id: data.Id });
               },
               function() {
                 console.log("取消");
@@ -194,6 +195,7 @@ layui
                 if (common.appResult.isSucceeded(res)) {
                   layer.msg("添加成功!", { icon: 6 });
                   table.reload("LAY-user-manage");
+                  layer.closeAll();
                 } else {
                   layer.msg("添加数据失败!", { icon: 5 });
                   common.appResult.loadErrorText(res);
@@ -213,6 +215,7 @@ layui
                 if (common.appResult.isSucceeded(res)) {
                   layer.msg("数据更新成功!", { icon: 6 });
                   table.reload("LAY-user-manage");
+                  layer.closeAll();
                 } else {
                   common.appResult.loadErrorText(res);
                 }
@@ -263,7 +266,6 @@ layui
           openFrom: function(data) {
             var title = tenant.baseData.editFalge ? "编辑租户" : "添加租户";
             var params = $.param(data);
-            console.log(params);
             var content = !tenant.baseData.editFalge
               ? "../tpl/from/tenant.html"
               : "../tpl/from/tenant.html?" + params;
@@ -283,12 +285,13 @@ layui
                     .find("#" + submitID);
                 //监听提交
                 iframeWindow.layui.form.on("submit(" + submitID + ")", function(
-                  data
+                  res
                 ) {
-                  var field = data.field; //获取提交的字段
+                  var field = res.field; //获取提交的字段
                   console.log(field, "数据提交");
 
                   if (tenant.baseData.editFalge) {
+                    field.Id = data.Id;
                     tenant.server.eidt(field);
                   } else {
                     tenant.server.add(field);
@@ -307,7 +310,6 @@ layui
 
       $("body .layui-btn").on("click", function() {
         var type = $(this).data("type");
-
         tenant.event[type] ? tenant.event[type].call(this) : "";
       });
     }

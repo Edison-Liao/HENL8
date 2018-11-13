@@ -95,76 +95,57 @@
         }).use(['index', 'useradmin', 'form', 'utils'], function () {
             var $ = layui.$,
                 form = layui.form,
-                utils = layui.utils;
-            var params = utils.getRequest(),
+                utils = layui.utils,
+                params = utils.getRequest(),
                 passParams;
 
-            if (params.type === "create") {
-                passParams = JSON.parse(decodeURIComponent(params.areaTypes));
+            // 服务交互
+            var request = {};
 
-                // 赋值区域类型
-                $('#AreaType').append('<option value=""></option>');
-                for (var i in passParams) {
-                    $('#AreaType').append('<option value= ' + passParams[i].Value + '>' + passParams[i].Text + '</option>');
+            // 事件
+            var active = {};
+
+            // 渲染
+            var render = {
+                // 渲染选择 `区域类型` 下拉菜单
+                selectAreaType(params) {
+                    var renderCode = '<option value=""></option>'; // 待渲染的字符串
+
+                    if (params.type === "create") {
+                        passParams = JSON.parse(decodeURIComponent(params.areaTypes));
+
+                        // 赋值区域类型
+                        passParams.forEach(function(item){
+                            renderCode += '<option value= ' + item.Value + '>' + item.Text + '</option>';
+                        });
+
+                        $('#AreaType').append(renderCode);
+                        form.render('select');
+                    }
+                    if (params.type === "edit") {
+                        passParams = { areaTypes: JSON.parse(decodeURIComponent(params.areaTypes)), data: JSON.parse(decodeURIComponent(params.data)) };
+
+                        var areaTypeArr = passParams.areaTypes
+
+                        // 赋值区域类型
+                        areaTypeArr.forEach(function (item) {
+                            renderCode += '<option value= ' + item.Value + '>' + item.Text + '</option>';
+                        });
+                        
+                        $('#AreaType').append(renderCode);
+                        form.render('select');
+
+                        // 赋值给编辑框
+                        var passFields = $.extend({}, passParams.data[0], { AreaType: passParams.data[0].AreaType, Status: parseInt(passParams.data[0].Status, 10) === 1 ? "Normal" : "Discarded" });
+                        form.val("layuiadmin-form-areafiles", passFields);
+                    }
                 }
-                form.render('select');
-            }
-            if (params.type === "edit") {
-                passParams = { areaTypes: JSON.parse(decodeURIComponent(params.areaTypes)), data: JSON.parse(decodeURIComponent(params.data)) };
+            }            
 
-                var areaTypeArr = passParams.areaTypes
+            // 渲染`区域类型`下拉菜单
+            render.selectAreaType(params);
 
-                // 赋值区域类型
-                $('#AreaType').append('<option value=""></option>');
-                for (var i in areaTypeArr) {
-                    $('#AreaType').append('<option value= ' + areaTypeArr[i].Value + '>' + areaTypeArr[i].Text + '</option>');
-                }
-                form.render('select');
-
-                // 赋值给编辑框
-                var passFields = $.extend({}, passParams.data[0], { AreaType: passParams.data[0].AreaType, Status: parseInt(passParams.data[0].Status, 10) === 1 ? "Normal" : "Discarded" });
-                form.val("layuiadmin-form-areafiles", passFields);
-
-            }
-
-            console.log(passParams, 'passParams')
-
-            // var areaFilesOfForm = {
-            //     init: function () {
-            //         this.AreaFilesForm();
-            //     },
-            //     AreaFilesForm: function () {
-            //         $.ajax({
-            //             type: "get",
-            //             url: layui.setter.baseUrl + "/api/User/groups",
-            //             async: true,
-            //             dataType: "json",
-            //             headers: {
-            //                 Accept: "application/json",
-            //                 "Content-Type": "application/json"
-            //             },
-            //             success: function (data) {
-            //                 layer.closeAll();
-            //                 console.log(data);
-            //                 if (data.IsSucceed) {
-            //                     var selectData = data.Result
-            //                     $('#areaStatus').append('<option value=""></option>');
-            //                     for (var i in selectData) {
-            //                         $('#areaStatus').append('<option value= ' + selectData[i].Value + '>' + selectData[i].Text + '</option>');
-            //                     }
-            //                     form.render('select');
-            //                 } else {
-            //                     layer.msg("获取用户类型失败" + data, { icon: 5 });
-            //                 }
-            //             },
-            //             error: function (err) {
-            //                 layer.closeAll();
-            //                 layer.msg("数据操作失败", { icon: 5 });
-            //             }
-            //         });
-            //     }
-            // }
-            // areaFilesOfForm.init();
+            console.log(passParams, 'passParams');
         })
     </script>
 </body>

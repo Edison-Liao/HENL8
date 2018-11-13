@@ -28,8 +28,6 @@ layui
         common = layui.common,
         areaTypes = []; // 任务类型
 
-      // utils.test();
-
       //z-tree
       // var z_tree = {
       //   init: function(treeData, el) {
@@ -145,12 +143,10 @@ layui
               title: "区域状态",
               width: 100,
               templet: function(d) {
-                return (
-                  d.Me.StatusName ||
-                  (parseInt(d.Me.Status, 10) === 1
-                    ? layui.consts["STATUS_ACTIVE"]
-                    : layui.consts["STATUS_BLOCK"])
-                );
+                console.log(d, "d 区域状态");
+                return parseInt(d.Me.Status, 10) === 1
+                  ? layui.consts["STATUS_ACTIVE"]
+                  : layui.consts["STATUS_BLOCK"];
               }
             },
             {
@@ -182,19 +178,15 @@ layui
       //监听工具条
       table.on("tool(table-Handler)", function(obj) {
         console.log(obj.event, "obj 监听工具条");
+
         // 删除
         if (obj.event === "delete") {
-          var msg = "是否确认删除？";
-          layer.confirm(msg, { icon: 3, title: "删除提示" }, function(index) {
-            console.log(obj.data.Me.Id, "待删除的ID");
-
-            request.delArea({
-              // Sign: "string",
-              Method: "remove",
-              // Timestamp: 0,
-              Data: { Id: obj.data.Me.Id }
-            });
-            layer.closeAll(); // 关闭所有弹窗
+          active.delete({
+            Tip: "是否确认删除？",
+            // Sign: "string",
+            Method: "remove",
+            // Timestamp: 0,
+            Data: { Id: obj.data.Me.Id }
           });
         }
 
@@ -208,47 +200,11 @@ layui
           });
         }
       });
+
       //服务交互
       var request = {
-        // getArea(params) {
-        // console.log("调用接口: /api/Area/query/all");
-        // utils.request(
-        //   "/api/Area/query/all",
-        //   params,
-        //   "GET",
-        //   function(res) {
-        //     // console.log(res, "res");
-        //     if (res.IsSucceed) {
-        //       var data = res.Result;
-        //       // console.log(data, "获取的接口数据");
-        //       // 区域树形菜单
-        //       // 获取一级菜单
-        //       var firstMenu = utils.getFirstMenu(data);
-        //       var areaMenu = utils
-        //         .getMenus(firstMenu, data)
-        //         .map(function(current) {
-        //           console.log(current, "current");
-        //           return {
-        //             // ...current,
-        //             name: current.Name
-        //           };
-        //         });
-        //       // console.log(areaMenu, "areaMenu");
-        //       // 初始化树形菜单
-        //       z_tree.init(areaMenu, "treeArea");
-        //     } else {
-        //       layer.msg("获取区域数据失败", {
-        //         icon: 5
-        //       });
-        //     }
-        //   },
-        //   function(err) {
-        //     console.log(err, "err");
-        //   }
-        // );
-        // },
+        // 获取区域类型
         getAreaType() {
-          // 获取区域类型
           utils.request(
             "/api/Area/areatype",
             { Method: "areatype" },
@@ -266,6 +222,90 @@ layui
             },
             function(err) {
               console.log(err, "err");
+            }
+          );
+        },
+        // 插入新区域档案
+        insertArea(params) {
+          utils.request(
+            "/api/Area/insert",
+            params,
+            "POST",
+            function(res) {
+              // console.log(res, "res");
+              if (res.IsSucceed) {
+                // 重载表格
+                table.reload("areaFilesTable");
+
+                layer.msg("新增成功", {
+                  icon: 1
+                });
+              } else {
+                var errorMessage = res.Errors[0].Message;
+                layer.msg(errorMessage, {
+                  icon: 5
+                });
+              }
+            },
+            function(err) {
+              console.log(err, "err");
+            },
+            {
+              contentType: "application/json"
+            }
+          );
+        },
+        // 新增区域档案
+        addArea(params) {
+          utils.request(
+            "/api/Common/GetInsertGuid",
+            {},
+            "GET",
+            function(res) {
+              console.log(res, "获取 Guid res");
+              if (res.IsSucceed) {
+                // 获取到的Guid赋值给params
+                params.Data.Idd = res.Result;
+                // 插入新区域档案
+                request.insertArea(params);
+              } else {
+                layer.msg("获取Guid失败", {
+                  icon: 5
+                });
+              }
+            },
+            function(err) {
+              console.log(err, "获取 Guid err");
+            }
+          );
+        },
+        // 修改区域档案
+        editArea(params) {
+          utils.request(
+            "/api/Area/update",
+            params,
+            "PUT",
+            function(res) {
+              // console.log(res, "res");
+              if (res.IsSucceed) {
+                // 重载表格
+                table.reload("areaFilesTable");
+
+                layer.msg("修改成功", {
+                  icon: 1
+                });
+              } else {
+                var errorMessage = res.Errors[0].Message;
+                layer.msg(errorMessage, {
+                  icon: 5
+                });
+              }
+            },
+            function(err) {
+              console.log(err, "err");
+            },
+            {
+              contentType: "application/json"
             }
           );
         },
@@ -309,6 +349,8 @@ layui
           console.log("导出数据");
         },
         create: function(params) {
+          console.log("新增");
+
           var content = "../tpl/from/areaFilesForm.html?" + $.param(params);
 
           layer.open({
@@ -332,54 +374,10 @@ layui
               ) {
                 var field = data.field; //获取提交的字段
                 var params = { Method: "insert", Data: field };
-                // 获取 Guid
-                utils.request(
-                  "/api/Common/GetInsertGuid",
-                  {},
-                  "GET",
-                  function(res) {
-                    console.log(res, "获取 Guid res");
-                    if (res.IsSucceed) {
-                      // 获取到的Guid赋值给params
-                      params.Data.Idd = res.Result;
-                      // 新增区域档案
-                      utils.request(
-                        "/api/Area/insert",
-                        params,
-                        "POST",
-                        function(res) {
-                          // console.log(res, "res");
-                          if (res.IsSucceed) {
-                            // 重载表格
-                            table.reload("areaFilesTable");
+                console.log(params, "新增区域档案 params");
 
-                            layer.msg("新增成功", {
-                              icon: 1
-                            });
-                          } else {
-                            var errorMessage = res.Errors[0].Message;
-                            layer.msg(errorMessage, {
-                              icon: 5
-                            });
-                          }
-                        },
-                        function(err) {
-                          console.log(err, "err");
-                        },
-                        {
-                          contentType: "application/json"
-                        }
-                      );
-                    } else {
-                      layer.msg("获取Guid失败", {
-                        icon: 5
-                      });
-                    }
-                  },
-                  function(err) {
-                    console.log(err, "获取 Guid err");
-                  }
-                );
+                // 新增区域档案
+                request.addArea(params);
 
                 layer.close(index); //关闭弹层
               });
@@ -423,33 +421,7 @@ layui
                 console.log(passFields, "passFields");
 
                 // 修改区域档案
-                utils.request(
-                  "/api/Area/update",
-                  passFields,
-                  "PUT",
-                  function(res) {
-                    // console.log(res, "res");
-                    if (res.IsSucceed) {
-                      // 重载表格
-                      table.reload("areaFilesTable");
-
-                      layer.msg("修改成功", {
-                        icon: 1
-                      });
-                    } else {
-                      var errorMessage = res.Errors[0].Message;
-                      layer.msg(errorMessage, {
-                        icon: 5
-                      });
-                    }
-                  },
-                  function(err) {
-                    console.log(err, "err");
-                  },
-                  {
-                    contentType: "application/json"
-                  }
-                );
+                request.editArea(passFields);
 
                 layer.close(index); //关闭弹层
               });
@@ -463,8 +435,15 @@ layui
             }
           });
         },
-        delete: function() {
+        delete: function(params) {
           console.log("删除");
+
+          layer.confirm(params.Tip, { icon: 3, title: "删除提示" }, function() {
+            console.log(params.Data.Id, "待删除的ID");
+
+            // 删除区域档案
+            request.delArea(params);
+          });
         }
       };
 

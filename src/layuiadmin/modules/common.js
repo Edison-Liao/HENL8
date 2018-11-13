@@ -1,5 +1,3 @@
-
-
 layui.define(function(exports) {
   var $ = layui.$,
     layer = layui.layer,
@@ -69,7 +67,7 @@ layui.define(function(exports) {
         var url = location.search; // 获取本地url中"?"符后的字串
       } else {
         var url = webside;
-        const theRequest = new Object();
+        var theRequest = new Object();
         if (url.indexOf("?") != -1) {
           const num = url.indexOf("?");
           const str = url.substr(num + 1);
@@ -81,6 +79,15 @@ layui.define(function(exports) {
         }
       }
       return theRequest;
+    },
+    //时间 格式化 2018-11-11=>20181111
+    formatRequertDate(data) {
+      if (typeof data !== "string" && data.length > 1) {
+        console.log("时间格式不符合规范");
+        return "";
+      }
+      var trimDate = $.trim(data);
+      return trimDate.split("-").join("");
     }
   };
 
@@ -123,6 +130,7 @@ layui.define(function(exports) {
           url: _option.baseUrl + url,
           method: method.toUpperCase(),
           dataType: "json",
+          timeout: 2500,
           data: data,
           crossDomain: true,
           hrFields: {

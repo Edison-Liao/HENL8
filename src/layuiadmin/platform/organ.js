@@ -149,7 +149,6 @@ layui
             $("#formTitle").html("新增职位信息");
             $(".submit").html("立即提交");
             organ.render.showForm("#PositionFrom");
-
             organ.baseData.editFalge = false;
           });
           $("#showStaff").click(function() {
@@ -195,9 +194,9 @@ layui
                 if (data.IsSucceed) {
                   console.log(data.Result.TreeNodes);
                   var nodeData = data.Result.TreeNodes;
-
                   var nodeData1 = organ.currData.addIcon(nodeData);
                   organ.render.renderTree(nodeData1);
+                  organ.render.renderCompanyInfo(nodeData1);
                 } else {
                   layer.msg("获取数据失败" + data, { icon: 5 });
                 }
@@ -479,6 +478,11 @@ layui
             $("#organFrom").addClass("layui-hide");
             $(id).show();
             $(id).removeClass("layui-hide");
+          },
+          renderCompanyInfo: function(data) {
+            console.log(data, "数据");
+            $("#companyName").html(data[0].Title ? data[0].Title : "四川海力");
+            $("#companyCode").html(data[0].Code ? data[0].Code : "HENL");
           },
           renderFormData: function(data) {
             if (data.Flag === "department") {

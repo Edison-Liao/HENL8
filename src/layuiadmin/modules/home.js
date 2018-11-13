@@ -58,6 +58,17 @@ layui
                 if (data.IsSucceed) {
                   const navData = data.Result.TreeNodes;
 
+                  navData[0].Children.push({
+                    Code: "06",
+                    Flag: "nav",
+                    Icon: "true",
+                    Id: "001",
+                    IsExpand: true,
+                    Key: "001",
+                    ParentId: null,
+                    Title: "租户管理",
+                    Url: "/platform/tenant?rad=1GpEZITN"
+                  });
                   $("#navBox").html(renderNav(navData));
                   element.init();
                 } else {

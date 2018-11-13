@@ -113,7 +113,7 @@ layui
             {
               title: "所属公司",
               templet: function(d) {
-                return d.CompanyName || layui.consts["DATA_NULL"];
+                return d.Me.CompanyName || layui.consts["DATA_NULL"];
               }
             },
             {
@@ -123,31 +123,33 @@ layui
               }
             },
             {
-              field: "Coding",
-              title: "编号"
+              title: "编号",
+              templet: function(d) {
+                return d.Me.Coding;
+              }
             },
             {
-              field: "Name",
-              title: "名称"
+              title: "名称",
+              templet: function(d) {
+                return d.Me.Name;
+              }
             },
             {
               field: "Address",
               title: "详细地址",
               minWidth: 300,
               templet: function(d) {
-                return d.Address || layui.consts["DATA_NULL"];
+                return d.Me.Address || layui.consts["DATA_NULL"];
               }
             },
             {
               title: "状态",
               width: 100,
               templet: function(d) {
-                return (
-                  d.StatusName ||
-                  (parseInt(d.Status, 10) === 0
-                    ? layui.consts["STATUS_ACTIVE"]
-                    : layui.consts["STATUS_BLOCK"])
-                );
+                console.log(d, "d 状态");
+                return parseInt(d.Me.Status, 10) === 1
+                  ? layui.consts["STATUS_ACTIVE"]
+                  : layui.consts["STATUS_BLOCK"];
               }
             },
             {
@@ -182,17 +184,12 @@ layui
         console.log(obj.event, "obj 监听工具条");
         // 删除
         if (obj.event === "delete") {
-          var msg = "是否确认删除？";
-          layer.confirm(msg, { icon: 3, title: "删除提示" }, function(index) {
-            console.log(obj.data.Id, "待删除的ID");
-
-            request.delVillage({
-              // Sign: "string",
-              Method: "remove",
-              // Timestamp: 0,
-              Data: { Id: obj.data.Id }
-            });
-            layer.closeAll(); // 关闭所有弹窗
+          active.delete({
+            Tip: "是否确认删除？",
+            // Sign: "string",
+            Method: "remove",
+            // Timestamp: 0,
+            Data: { Id: obj.data.Me.Id }
           });
         }
 
@@ -206,47 +203,11 @@ layui
           });
         }
       });
+
       //服务交互
       var request = {
-        // getArea(params) {
-        // console.log("调用接口: /api/Area/query/all");
-        // utils.request(
-        //   "/api/Area/query/all",
-        //   params,
-        //   "GET",
-        //   function(res) {
-        //     // console.log(res, "res");
-        //     if (res.IsSucceed) {
-        //       var data = res.Result;
-        //       // console.log(data, "获取的接口数据");
-        //       // 区域树形菜单
-        //       // 获取一级菜单
-        //       var firstMenu = utils.getFirstMenu(data);
-        //       var areaMenu = utils
-        //         .getMenus(firstMenu, data)
-        //         .map(function(current) {
-        //           console.log(current, "current");
-        //           return {
-        //             // ...current,
-        //             name: current.Name
-        //           };
-        //         });
-        //       // console.log(areaMenu, "areaMenu");
-        //       // 初始化树形菜单
-        //       z_tree.init(areaMenu, "treeArea");
-        //     } else {
-        //       layer.msg("获取区域数据失败", {
-        //         icon: 5
-        //       });
-        //     }
-        //   },
-        //   function(err) {
-        //     console.log(err, "err");
-        //   }
-        // );
-        // },
+        // 获取所属小区
         getVillageType() {
-          // 获取所属小区
           utils.request(
             "/api/Area/query/all",
             { Method: "all", "Data.AreaType": 3 },
@@ -267,9 +228,93 @@ layui
             }
           );
         },
-        // 删除所属小区
-        delVillage(params) {
-          console.log(params, "调用接口: /api/Area/remove");
+        // 插入新抄表点档案
+        insertReadingPoint(params) {
+          utils.request(
+            "/api/ReadingPoint/insert",
+            params,
+            "POST",
+            function(res) {
+              // console.log(res, "res");
+              if (res.IsSucceed) {
+                // 重载表格
+                table.reload("metereadTable");
+
+                layer.msg("新增成功", {
+                  icon: 1
+                });
+              } else {
+                var errorMessage = res.Errors[0].Message;
+                layer.msg(errorMessage, {
+                  icon: 5
+                });
+              }
+            },
+            function(err) {
+              console.log(err, "err");
+            },
+            {
+              contentType: "application/json"
+            }
+          );
+        },
+        // 新增抄表点档案
+        addReadingPoint(params) {
+          utils.request(
+            "/api/Common/GetInsertGuid",
+            {},
+            "GET",
+            function(res) {
+              console.log(res, "获取 Guid res");
+              if (res.IsSucceed) {
+                // 获取到的Guid赋值给params
+                params.Data.Idd = res.Result;
+                // 插入新抄表点档案
+                request.insertReadingPoint(params);
+              } else {
+                layer.msg("获取Guid失败", {
+                  icon: 5
+                });
+              }
+            },
+            function(err) {
+              console.log(err, "获取 Guid err");
+            }
+          );
+        },
+        // 修改抄表点档案
+        editReadingPoint(params) {
+          utils.request(
+            "/api/ReadingPoint/update",
+            params,
+            "PUT",
+            function(res) {
+              // console.log(res, "res");
+              if (res.IsSucceed) {
+                // 重载表格
+                table.reload("metereadTable");
+
+                layer.msg("修改成功", {
+                  icon: 1
+                });
+              } else {
+                var errorMessage = res.Errors[0].Message;
+                layer.msg(errorMessage, {
+                  icon: 5
+                });
+              }
+            },
+            function(err) {
+              console.log(err, "err");
+            },
+            {
+              contentType: "application/json"
+            }
+          );
+        },
+        // 删除抄表点档案
+        delReadingPoint(params) {
+          // console.log(params, "调用接口: /api/Area/remove");
           utils.request(
             "/api/ReadingPoint/remove",
             params,
@@ -330,55 +375,10 @@ layui
               ) {
                 var field = data.field; //获取提交的字段
                 var params = { Method: "insert", Data: field };
-                // 获取 Guid
-                utils.request(
-                  "/api/Common/GetInsertGuid",
-                  {},
-                  "GET",
-                  function(res) {
-                    console.log(res, "获取 Guid res");
-                    if (res.IsSucceed) {
-                      // 获取到的Guid赋值给params
-                      params.Data.Idd = res.Result;
-                      console.log("新增所属小区参数: params", params);
-                      // 新增所属小区
-                      utils.request(
-                        "/api/ReadingPoint/insert",
-                        params,
-                        "POST",
-                        function(res) {
-                          // console.log(res, "res");
-                          if (res.IsSucceed) {
-                            // 重载表格
-                            table.reload("metereadTable");
+                console.log(params, "新增抄表点档案 params");
 
-                            layer.msg("新增成功", {
-                              icon: 1
-                            });
-                          } else {
-                            var errorMessage = res.Errors[0].Message;
-                            layer.msg(errorMessage, {
-                              icon: 5
-                            });
-                          }
-                        },
-                        function(err) {
-                          console.log(err, "err");
-                        },
-                        {
-                          contentType: "application/json"
-                        }
-                      );
-                    } else {
-                      layer.msg("获取Guid失败", {
-                        icon: 5
-                      });
-                    }
-                  },
-                  function(err) {
-                    console.log(err, "获取 Guid err");
-                  }
-                );
+                // 新增抄表点档案
+                request.addReadingPoint(params);
 
                 layer.close(index); //关闭弹层
               });
@@ -416,39 +416,13 @@ layui
               iframeWindow.layui.form.on("submit(" + submitID + ")", function(
                 data
               ) {
-                var parseParams = JSON.parse(params.data)[0];
+                var parseParams = JSON.parse(params.data)[0].Me;
                 var field = $.extend({}, data.field, { Id: parseParams.Id }); //获取提交的字段
                 var passFields = { Method: "update", Data: field };
                 console.log(passFields, "passFields");
 
-                // 修改所属小区
-                utils.request(
-                  "/api/ReadingPoint/update",
-                  passFields,
-                  "PUT",
-                  function(res) {
-                    // console.log(res, "res");
-                    if (res.IsSucceed) {
-                      // 重载表格
-                      table.reload("metereadTable");
-
-                      layer.msg("修改成功", {
-                        icon: 1
-                      });
-                    } else {
-                      var errorMessage = res.Errors[0].Message;
-                      layer.msg(errorMessage, {
-                        icon: 5
-                      });
-                    }
-                  },
-                  function(err) {
-                    console.log(err, "err");
-                  },
-                  {
-                    contentType: "application/json"
-                  }
-                );
+                // 修改抄表点档案
+                request.editReadingPoint(passFields);
 
                 layer.close(index); //关闭弹层
               });
@@ -462,8 +436,15 @@ layui
             }
           });
         },
-        delete: function() {
-          console.log("删除");
+        delete: function(params) {
+          console.log("删除", params);
+
+          layer.confirm(params.Tip, { icon: 3, title: "删除提示" }, function() {
+            console.log(params.Data.Id, "待删除的ID");
+
+            // 删除抄表点档案
+            request.delReadingPoint(params);
+          });
         }
       };
 

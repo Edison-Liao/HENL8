@@ -45,6 +45,15 @@
                 <input type="text" name="SortNum" lay-verify="number" placeholder="请输入排序号" autocomplete="off" class="layui-input">
             </div>
         </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">抄表点状态</label>
+            <div class="layui-input-inline">
+                <select name="Status" lay-verify="required" id='Status'>
+                    <option value="Normal">启用</option>
+                    <option value="Discarded">停用</option>
+                </select>
+            </div>
+        </div>
         <div class="layui-form-item">
             <label class="layui-form-label">详细地址</label>
             <div class="layui-input-block">
@@ -71,76 +80,58 @@
         }).use(['index', 'useradmin', 'form', 'utils'], function () {
             var $ = layui.$,
                 form = layui.form,
-                utils = layui.utils;
-            var params = utils.getRequest(),
-                passParams;
+                utils = layui.utils,
+                params = utils.getRequest(),
+                passParams;                
 
-            if (params.type === "create") {
-                passParams = JSON.parse(decodeURIComponent(params.villageTypes));
+            // 服务交互
+            var request = {};
 
-                // 赋值所属小区
-                $('#Area_Id_Village').append('<option value=""></option>');
-                for (var i in passParams) {
-                    $('#Area_Id_Village').append('<option value= ' + passParams[i].Me.Id + '>' + passParams[i].Me.Name + '</option>');
+            // 事件
+            var active = {};
+
+            // 渲染
+            var render = {
+                // 渲染选择 `所属小区` 下拉菜单
+                selectVillageType() {
+                    var renderCode = '<option value=""></option>'; // 待渲染的字符串
+
+                    if (params.type === "create") {
+                        passParams = JSON.parse(decodeURIComponent(params.villageTypes));
+
+                        // 赋值所属小区
+                        passParams.forEach(function (item) {
+                            renderCode += '<option value= ' + item.Me.Id + '>' + item.Me.Name + '</option>';
+                        });
+
+                        $('#Area_Id_Village').append(renderCode);
+                        form.render('select');
+                    }
+                    if (params.type === "edit") {
+                        passParams = { villageTypes: JSON.parse(decodeURIComponent(params.villageTypes)), data: JSON.parse(decodeURIComponent(params.data)) };
+
+                        var villageTypeArr = passParams.villageTypes;
+
+                        // 赋值所属小区
+                        villageTypeArr.forEach(function (item) {
+                            renderCode += '<option value= ' + item.Me.Id + '>' + item.Me.Name + '</option>';
+                        });
+
+                        $('#Area_Id_Village').append(renderCode);
+                        form.render('select');
+
+                        // 赋值给编辑框
+                        var passFields = $.extend({}, passParams.data[0].Me, { "Area_Id_Village": passParams.data[0].Me.Area_Id_Village, Status: parseInt(passParams.data[0].Me.Status, 10) === 1 ? "Normal" : "Discarded" });
+                        console.log(passFields,"passFields")
+                        form.val("layuiadmin-form-meteread", passFields);
+                    }
                 }
-                form.render('select');
-            }
-            if (params.type === "edit") {
-                passParams = { villageTypes: JSON.parse(decodeURIComponent(params.villageTypes)), data: JSON.parse(decodeURIComponent(params.data)) };
+            };
 
-                var villageTypeArr = passParams.villageTypes;
+            // 渲染`区域类型`下拉菜单
+            render.selectVillageType(params);
 
-                // 赋值所属小区
-                $('#Area_Id_Village').append('<option value=""></option>');
-                for (var i in villageTypeArr) {
-                    $('#Area_Id_Village').append('<option value= ' + villageTypeArr[i].Me.Id + '>' + villageTypeArr[i].Me.Name + '</option>');
-                }
-                form.render('select');
-
-                // // // 赋值给编辑框
-                var passFields = $.extend({}, passParams.data[0], { "Area_Id_Village": passParams.data[0].Area_Id_Village });
-                // console.log(passFields,"passFields")
-                form.val("layuiadmin-form-meteread", passFields);
-            }
-
-            console.log(passParams, 'passParams')
-
-            // var areaFilesOfForm = {
-            //     init: function () {
-            //         this.AreaFilesForm();
-            //     },
-            //     AreaFilesForm: function () {
-            //         $.ajax({
-            //             type: "get",
-            //             url: layui.setter.baseUrl + "/api/User/groups",
-            //             async: true,
-            //             dataType: "json",
-            //             headers: {
-            //                 Accept: "application/json",
-            //                 "Content-Type": "application/json"
-            //             },
-            //             success: function (data) {
-            //                 layer.closeAll();
-            //                 console.log(data);
-            //                 if (data.IsSucceed) {
-            //                     var selectData = data.Result
-            //                     $('#areaStatus').append('<option value=""></option>');
-            //                     for (var i in selectData) {
-            //                         $('#areaStatus').append('<option value= ' + selectData[i].Value + '>' + selectData[i].Text + '</option>');
-            //                     }
-            //                     form.render('select');
-            //                 } else {
-            //                     layer.msg("获取用户类型失败" + data, { icon: 5 });
-            //                 }
-            //             },
-            //             error: function (err) {
-            //                 layer.closeAll();
-            //                 layer.msg("数据操作失败", { icon: 5 });
-            //             }
-            //         });
-            //     }
-            // }
-            // areaFilesOfForm.init();
+            console.log(passParams, 'passParams');
         })
     </script>
 </body>
