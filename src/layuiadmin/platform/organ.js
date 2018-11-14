@@ -551,24 +551,24 @@ layui
                 if (data[i].Flag === "organ") {
                   data[i].icon =
                     "../../../layuiadmin/style/img/ztreeImg/company.png";
-                  data[i].iconOpen =
-                    "../../../layuiadmin/style/img/ztreeImg/companyOp.png";
+                  // data[i].iconOpen =
+                  //   "../../../layuiadmin/style/img/ztreeImg/companyOp.png";
                 } else if (data[i].Flag === "department") {
                   data[i].icon =
                     "../../../layuiadmin/style/img/ztreeImg/department.png";
-                  data[i].iconOpen =
-                    "../../../layuiadmin/style/img/ztreeImg/departmentOp.png";
+                  // data[i].iconOpen =
+                  //   "../../../layuiadmin/style/img/ztreeImg/departmentOp.png";
                 } else if (data[i].Flag === "position") {
                   data[i].icon =
                     "../../../layuiadmin/style/img/ztreeImg/position.png";
-                  data[i].iconOpen =
-                    "../../../layuiadmin/style/img/ztreeImg/positionOp.png";
+                  // data[i].iconOpen =
+                  //   "../../../layuiadmin/style/img/ztreeImg/positionOp.png";
                 } else if (data[i].Flag === "staff") {
                   delete data[i].Children;
                   data[i].icon =
                     "../../../layuiadmin/style/img/ztreeImg/staff.png";
-                  data[i].iconOpen =
-                    "../../../layuiadmin/style/img/ztreeImg/staffOp.png";
+                  // data[i].iconOpen =
+                  //   "../../../layuiadmin/style/img/ztreeImg/staffOp.png";
                 }
                 if (data[i].Children && data[i].Children.length > 0) {
                   organ.currData.addIcon(data[i].Children);

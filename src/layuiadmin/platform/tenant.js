@@ -20,14 +20,7 @@ layui
       //获取
       dataBen = consts.basePostData("CompanyPageSearch");
       delete dataBen.IsEncryption;
-      var Data = {
-        key: "",
-        DatetimeBegin: "20180511",
-        DatetimeEnd: "20191230",
-        PageIndex: 1,
-        PageSize: 1
-      };
-      dataBen.Data = Data;
+
       var tenantTable = table.render({
         elem: "#LAY-user-manage",
         url: layui.setter.baseUrl + "/api/Tenant/company/info/search", //接口

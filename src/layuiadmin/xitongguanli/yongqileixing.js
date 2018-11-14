@@ -12,19 +12,18 @@ layui
     form = layui.form,
     common = layui.common;
     var laypage = layui.laypage;
+    var option = {
+      baseUrl:layui.setter.revenueUrl,
+    }
     //用户管理表格渲染
     var yongqileixingTable = table.render({
       elem: "#LAY-yongqileixingTable",
       id:"LAY-yongqileixingTable",
-      url: layui.setter.baseUrl + "/api/UsergasType/query/list", //接口
+      url: layui.setter.revenueUrl + "/api/UsergasType/query/list", //接口
       //response:layui.setter.response,
-      where:{"CompanyCoding":"88888888","Method":"list"},
+      where:{"Data.Name":"","Method":"list"},
       parseData:layui.setter.parseData,
-      request: {
-        tokenName: false,
-        pageName: "PageIndex",
-        limitName: "PageSize"
-      },//layui.setter.request,
+      request: layui.setter.request,
       page:true,
       cols: [
         [
@@ -54,7 +53,7 @@ layui
               return d.Description;
             }},
           { field: "SortNum",  title: "排序号" ,templet: function(d) {
-              return d.Description;
+              return d.SortNum;
             }},  
           { field: "CreateDate", title: "创建时间",templet: function(d) {
               return "<div>" + layui.util.toDateString(d.CreateDate) + "</div>";
@@ -83,7 +82,7 @@ layui
         console.log(data);
         var str1 = JSON.stringify(dataBean);
         common
-          .ajaxFun("post", "/api/UsergasType/insert", str1)
+          .ajaxFun("post", "/api/UsergasType/insert", str1,option)
           .then(function(res) {
             if (common.appResult.isSucceeded(res)) {
               table.reload("LAY-yongqileixingTable");
@@ -103,11 +102,13 @@ layui
         layer.closeAll();
         layer.load(0, { shade: false });
         var dataBean = layui.consts.basePostData();
-        dataBean.Data = para.Id
+        dataBean.Data = {}
+        dataBean.Data.Id = para.Id
+        dataBean.Data.CompanyId = para.CompanyId
         dataBean.Method = "remove"
         var str1 = JSON.stringify(dataBean);
         common
-          .ajaxFun("delete", "/api/UsergasType/remove", str1)
+          .ajaxFun("delete", "/api/UsergasType/remove", str1,option)
           .then(function(res) {
             if (common.appResult.isSucceeded(res)) {
               table.reload("LAY-yongqileixingTable");
@@ -122,8 +123,10 @@ layui
       },
       edit: function(para) {
         var dataBean = layui.consts.basePostData();
+        dataBean.Data = {}
+        dataBean.Data.Id = para.Id
         common
-          .ajaxFun("get", "/api/UsergasType/query/"+para.Id)
+          .ajaxFun("get", "/api/UsergasType/query/key?Data.Id="+para.Id+"&Method=key","",option)
           .then(function(res) {
             if (common.appResult.isSucceeded(res)) {
               var res = res.Result
@@ -151,7 +154,7 @@ layui
                     dataBean.Method="update";
                     var str1 = JSON.stringify(dataBean);
                     console.info("data", str1)
-                    common.ajaxFun("put", "/api/UsergasType/update", str1).then(function(res) {
+                    common.ajaxFun("put", "/api/UsergasType/update", str1,option).then(function(res) {
                       if (common.appResult.isSucceeded(res)) {
                         table.reload("LAY-yongqileixingTable");
                         $("#lock-from").find('input[type=text],select,input[type=hidden]').each(function() {
@@ -185,98 +188,6 @@ layui
           .fail(err => {
             console.log(err);
           });
-        /*
-        $.ajax({
-          type: "get",
-          url:
-            layui.setter.baseUrl + "/api/BusinessHall/query/key?Data.key="+para.Me.Id+"&Method=key",
-          async: true, 
-          success: function(data) {
-            if (data.IsSucceed) {
-              console.info(data)
-              var res = data.Result.Me
-              layer.open({
-                type: 1,
-                title: "修改用气类型",
-                content: $('#lock-from'),
-                maxmin: true,
-                area: ["700px", "400px"],
-                btn: ["确定", "取消"],
-                yes: function(index, layero) {
-                  var submit = $("#LAY-wangdian-add-submit");
-                   //获取提交的字段
-                  //监听提交
-                  form.on('submit(LAY-wangdian-add-submit)', function (data) {
-                    var field = data.field; //获取提交的字段
-                  
-                    //提交 Ajax 成功后，静态更新表格中的数据
-                    var dataBean = layui.consts.basePostData();
-                    var date = new Date();
-                    dataBean.Data = field;
-                    dataBean.Data.Id = res.Id;
-                    dataBean.Data.LeaderID = res.LeaderID ? res.LeaderID:null;
-                    dataBean.Data.CompanyCoding = "88888888";
-                    dataBean.Method="update";
-                    var str1 = JSON.stringify(dataBean);
-                    console.info("data", str1)
-                    $.ajax({
-                      type: "Put",
-                      url: layui.setter.baseUrl + "/api/BusinessHall/update",
-                      data: str1,
-                      async: true,
-                      dataType: "json",
-                      headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json"
-                      },
-                      success: function(data) {
-                        layer.closeAll();
-                        
-                        if (data.IsSucceed) {
-                          layer.msg("修改用气类型成功!", { icon: 6 });
-                          table.reload("LAY-yongqileixingTable");
-                          $("#lock-from").find('input[type=text],select,input[type=hidden]').each(function() {
-                               $(this).val('');
-                          });
-                        } else {
-                          table.reload("LAY-yongqileixingTable");
-                          layer.msg("失败: " + data.Errors[0].Message, { icon: 5 });
-                        }
-                      },
-                      error: function(err) {
-                        layer.closeAll();
-                        layer.msg("数据操作失败", { icon: 5 });
-                      }
-                    });
-                    
-                    layer.close(index); //关闭弹层
-                  });
-
-                  submit.trigger("click");
-                }
-              });
-              form.val("lock-from", {
-                "Coding": res.Coding // "name": "value"
-                ,"Name": res.Name
-                ,"CompanyCoding": res.CompanyCoding
-                ,"Addr": res.Addr
-                ,"Tels": res.Tels
-                ,"WorkTimeInfo": res.WorkTimeInfo
-                ,"LeaderID":res.LeaderID
-                ,"LeaderName":res.LeaderName
-                ,"SortNum": res.SortNum
-                ,"Description": res.Description
-              })
-            } else {
-              layer.msg("失败" + data.Errors[0].Message, { icon: 5 });
-            }
-          },
-          error: function(err) {
-            layer.closeAll();
-            layer.msg("数据加载失败", { icon: 5 });
-          }
-        });
-        */
       }
     }
     //事件
@@ -307,7 +218,7 @@ layui
             //监听提交
             form.on('submit(LAY-yongqileixi-add-submit)', function (data) {
               var field = data.field;
-              common.ajaxFun("get", "/api/Common/GetInsertGuid").then(function(res) {
+              common.ajaxFun("get", "/api/Common/GetInsertGuid","",option).then(function(res) {
                 if (common.appResult.isSucceeded(res)) {
                   field.Idd = res.Result;
                   yongqiSeverEvent.add(field);

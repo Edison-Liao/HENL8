@@ -5,19 +5,25 @@ layui
   .extend({
     index: "lib/index" //主入口模块
   })
-  .use(["index", "table", "form",'consts'], function() {
+  .use(["index", "table", "form",'consts',"common"], function() {
     
     var $ = layui.$,
     table = layui.table,
+    common = layui.common,
     form = layui.form;
+    var departments = {}
+    var department = {}
+    var position = {}
+    var assistant = {}
+    var shebeiPar = {}
     var laypage = layui.laypage;
     //用户管理表格渲染
     var yingyewangdianTable = table.render({
       elem: "#LAY-yingyewangdianTable",
       id:"LAY-yingyewangdianTable",
-      url: layui.setter.baseUrl + "/api/BusinessHall/query/list", //接口
+      url: layui.setter.revenueUrl + "/api/BusinessHall/query/list", //接口
       //response:layui.setter.response,
-      where:{"Data.CompanyCoding":"88888888","Method":"list"},
+      where:{"Method":"list"},
       parseData:layui.setter.parseData,
       request: layui.setter.request,
       page:true,
@@ -106,18 +112,20 @@ layui
         layer.closeAll();
         layer.load(0, { shade: false });
         var dataBean = layui.consts.basePostData();
-        
-        var date = new Date();
+        console.info(data)
+        delete(data.P1) 
+        delete(data.A1)
+        delete(data.C1)
+
         dataBean.Data = data;
-        dataBean.Data.LeaderID = dataBean.Data.LeaderID ? dataBean.Data.LeaderID:null;
-        dataBean.Data.CompanyCoding = "88888888";
-        dataBean.Data.CompanyName = "88888888";
+        dataBean.Data.LeaderName = shebeiPar.FixedUser_Name ? shebeiPar.FixedUser_Name:"";
+        dataBean.Data.LeaderID = shebeiPar.FixedUser_Id ? shebeiPar.FixedUser_Id:"";
         dataBean.Method="insert";
         var str1 = JSON.stringify(dataBean);
         console.info("data", str1)
         $.ajax({
           type: "Post",
-          url: layui.setter.baseUrl + "/api/BusinessHall/insert",
+          url: layui.setter.revenueUrl + "/api/BusinessHall/insert",
           data: str1,
           async: true,
           dataType: "json",
@@ -150,12 +158,12 @@ layui
         layer.closeAll();
         layer.load(0, { shade: false });
         var dataBean = layui.consts.basePostData();
-        dataBean.Data = {"Key":para.Me.Id}
+        dataBean.Data = {"Id":para.Me.Id}
         dataBean.Method = "remove"
         var str1 = JSON.stringify(dataBean);
         $.ajax({
           type: "delete",
-          url: layui.setter.baseUrl + "/api/BusinessHall/Remove/",
+          url: layui.setter.revenueUrl + "/api/BusinessHall/Remove/",
           async: true,
           data: str1,
           dataType: "json",
@@ -188,7 +196,7 @@ layui
         $.ajax({
           type: "get",
           url:
-            layui.setter.baseUrl + "/api/BusinessHall/query/key?Data.key="+para.Me.Id+"&Method=key",
+            layui.setter.revenueUrl + "/api/BusinessHall/query/key?Data.key="+para.Me.Id+"&Method=key",
 
           async: true,
           data: str1,
@@ -223,7 +231,7 @@ layui
         $.ajax({
           type: "get",
           url:
-            layui.setter.baseUrl + "/api/BusinessHall/query/key?Data.key="+para.Me.Id+"&Method=key",
+            layui.setter.revenueUrl + "/api/BusinessHall/query/key?Data.Id="+para.Me.Id+"&Method=key",
           async: true, 
           success: function(data) {
             if (data.IsSucceed) {
@@ -234,7 +242,7 @@ layui
                 title: "修改营业网点",
                 content: $('#lock-from'),
                 maxmin: true,
-                area: ["700px", "400px"],
+                area: ["900px", "500px"],
                 btn: ["确定", "取消"],
                 yes: function(index, layero) {
                   var submit = $("#LAY-wangdian-add-submit");
@@ -248,14 +256,17 @@ layui
                     var date = new Date();
                     dataBean.Data = field;
                     dataBean.Data.Id = res.Id;
-                    dataBean.Data.LeaderID = res.LeaderID ? res.LeaderID:null;
-                    dataBean.Data.CompanyCoding = "88888888";
+                    delete(data.P1) 
+                    delete(data.A1)
+                    delete(data.C1)
+                    dataBean.Data.LeaderName = shebeiPar.FixedUser_Name ? shebeiPar.FixedUser_Name:"";
+                    dataBean.Data.LeaderID = shebeiPar.FixedUser_Id ? shebeiPar.FixedUser_Id:"";
                     dataBean.Method="update";
                     var str1 = JSON.stringify(dataBean);
                     console.info("data", str1)
                     $.ajax({
                       type: "Put",
-                      url: layui.setter.baseUrl + "/api/BusinessHall/update",
+                      url: layui.setter.revenueUrl + "/api/BusinessHall/update",
                       data: str1,
                       async: true,
                       dataType: "json",
@@ -301,6 +312,56 @@ layui
                 ,"SortNum": res.SortNum
                 ,"Description": res.Description
               })
+              if(para.Me.LeaderName){
+                assistant = common.findObjectByKeyVal(departments,"Title",para.Me.LeaderName)
+                //console.info(assistant)
+                position = common.findObjectByKeyVal(departments,"Id",assistant.ParentId)
+                //console.info(position)
+                department = common.findObjectByKeyVal(departments,"Id",position.ParentId)
+                console.info(department.Title,position.Title,assistant.Title)
+                $(province).html('');
+                $(province).append('<option selected>全部</option>');
+                for(var i in departments){
+                  $(province).append('<option  &nbsp; id='+departments[i].Id+' &nbsp; value='+departments[i].Title+'>'+departments[i].Title+'</option>');
+                }
+                $(province).find("option[value='"+department.Title+"']").attr('selected', true); 
+                form.render('select');
+                //选择职位下拉框
+                $(city).html('');
+                $(city).append('<option>全部</option>');
+                var cs = department.Children
+                if(cs){
+                  for(var i in cs){
+                    $(city).append('<option &nbsp;  id='+cs[i].Id+' &nbsp;  value='+cs[i].Title+'>'+cs[i].Title+'</option>');
+                  }
+                  $(city).find("option[value='"+position.Title+"']").attr('selected', true); 
+                }
+                form.render('select');
+                $(city).next().find('.layui-this').removeClass('layui-this').click();
+                pca.formHidden('province', data.value);
+                $('.pca-label-province').html(data.value);//此处可以自己修改 显示的位置, 不想显示可以直接去掉
+                
+                //选择营业员下拉框
+                $(area).html('');
+                  $(area).append('<option>全部</option>');
+                cs = position.Children
+                  if(cs){
+                    for(var i in cs){
+                      console.info(cs[i].Id)
+                      $(area).append('<option &nbsp; id='+cs[i].Id+' &nbsp; value='+cs[i].Title+'>'+cs[i].Title+'</option>');
+                    }
+                    $(area).find("option[value='"+assistant.Title+"']").attr('selected', true); 
+                  }
+                form.render('select');
+                $(area).next().find('.layui-this').removeClass('layui-this').click();
+                pca.formHidden('city', data.value);
+                $('.pca-label-city').html(data.value);
+              }else{
+                pca.init('select[name=P1]', 'select[name=C1]', 'select[name=A1]');
+                form.render('select');
+              }
+              console.info(para)
+              
             } else {
               layer.msg("失败" + data.Errors[0].Message, { icon: 5 });
             }
@@ -327,12 +388,35 @@ layui
         });
       },
       add: function() {
+        $.ajax({
+          type: "Get",
+          url: layui.setter.baseUrl + "/api/Organ/treeview", 
+          async: true,
+          headers: {
+            Accept: "application/json, text/javascript, */*; q=0.01",
+          },
+          success: function(data) {
+            
+            //console.log(data);
+            if (data.IsSucceed) {
+              departments = data.Result.TreeNodes[0].Children
+              
+              pca.init('select[name=P1]', 'select[name=C1]', 'select[name=A1]');
+              form.render('select');
+              //$("#BusinessHall_Name").append("<option value="+data.Id+">"+data.Name+"</option>");
+            } 
+          },
+          error: function(err) {
+            
+            layer.msg("数据操作失败", { icon: 5 });
+          }
+        });
         layer.open({
           type: 1,
           title: "添加营业网点",
           content: $('#lock-from'),
           maxmin: true,
-          area: ["700px", "500px"],
+          area: ["900px", "500px"],
           btn: ["确定", "取消"],
           yes: function(index, layero) {
             var submit = $("#LAY-wangdian-add-submit");
@@ -343,7 +427,7 @@ layui
 
               $.ajax({
                 type: "get",
-                url: layui.setter.baseUrl + "/api/Common/GetInsertGuid",
+                url: layui.setter.revenueUrl + "/api/Common/GetInsertGuid",
                 async: true,
                 dataType: "json",
                 headers: {
@@ -376,6 +460,84 @@ layui
       }
     };
 
+    var pca = {};
+  
+    pca.keys = {};
+    pca.ckeys = {};
+    
+    pca.init = function(province, city, area, initprovince, initcity, initarea){//jQuery选择器, 省-市-区
+      if(!province || !$(province).length) return; 
+      $(province).html('');
+      $(province).append('<option selected>全部</option>');
+      for(var i in departments){
+        $(province).append('<option  &nbsp; id='+departments[i].Id+' &nbsp; value='+departments[i].Title+'>'+departments[i].Title+'</option>');
+        pca.keys[departments[i].Title] = departments[i];
+      }
+      form.render('select');
+      if(!city || !$(city).length) return;
+      pca.formRender(city);
+      form.on('select(province)', function(data){
+        
+          var cs = pca.keys[data.value].Children;
+          $(city).html('');
+          $(city).append('<option>全部</option>');
+          if(cs){
+            for(var i in cs){
+              $(city).append('<option &nbsp;  id='+cs[i].Id+' &nbsp;  value='+cs[i].Title+'>'+cs[i].Title+'</option>');
+              pca.ckeys[cs[i].Title] = cs[i];
+            }
+            $(city).find('option:eq(1)').attr('selected', true);
+          }
+        form.render('select');
+        $(city).next().find('.layui-this').removeClass('layui-this').click();
+        pca.formHidden('province', data.value);
+        $('.pca-label-province').html(data.value);//此处可以自己修改 显示的位置, 不想显示可以直接去掉
+      }); 
+      
+      if(!area || !$(area).length) return;
+      pca.formRender(area);
+      form.on('select(city)', function(data){
+          var cs = pca.ckeys[data.value];
+
+          $(area).html('');
+          $(area).append('<option>全部</option>');
+          if(cs){
+            cs = cs.Children;
+          for(var i in cs){
+            console.info(cs[i].Id)
+            $(area).append('<option &nbsp; id='+cs[i].Id+' &nbsp; value='+cs[i].Title+'>'+cs[i].Title+'</option>');
+          }
+          $(area).find('option:eq(1)').attr('selected', true);
+          }
+        form.render('select');
+        $(area).next().find('.layui-this').removeClass('layui-this').click();
+        pca.formHidden('city', data.value);
+        $('.pca-label-city').html(data.value);  //此处可以自己修改 显示的位置, 不想显示可以直接去掉
+      }); 
+      form.on('select(area)', function(data){
+        //console.info($("#area option[selected='selected']").attr('id'))
+        //console.info($("#area option[selected='selected']").val())
+        shebeiPar.FixedUser_Name = $("#area option[selected='selected']").val();
+        shebeiPar.FixedUser_Id = $("#area option[selected='selected']").attr('id');
+        
+        pca.formHidden('area', data.value);   
+        $('.pca-label-area').html(data.value);  //此处可以自己修改 显示的位置, 不想显示可以直接去掉
+      }); 
+    }
+
+    pca.formRender = function(obj){
+      $(obj).html('');
+      $(obj).append('<option>全部</option>');
+      form.render('select');
+    }
+    
+    pca.formHidden = function(obj, val){
+      if(!$('#pca-hide-'+obj).length) 
+        $('body').append('<input id="pca-hide-'+obj+'" type="hidden" value="'+val+'" />');
+      else
+        $('#pca-hide-'+obj).val(val);
+    }
+
     $(".layui-btn.layuiadmin-btn-useradmin").on("click", function() {
       var type = $(this).data("type");
       active[type] ? active[type].call(this) : "";
@@ -400,7 +562,28 @@ layui
         //do something
         console.info(data);
         //同步更新缓存对应的值
-        wangdianSeverEvent.edit(data)
+        
+        $.ajax({
+          type: "Get",
+          url: layui.setter.baseUrl + "/api/Organ/treeview", 
+          async: true,
+          headers: {
+            Accept: "application/json, text/javascript, */*; q=0.01",
+          },
+          success: function(re) {
+            if (re.IsSucceed) {
+              departments = re.Result.TreeNodes[0].Children
+
+              console.info(departments)
+              wangdianSeverEvent.edit(data)
+              
+            } 
+          },
+          error: function(err) {
+            
+            layer.msg("数据操作失败", { icon: 5 });
+          }
+        });
       }
     });
   });

@@ -9,16 +9,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
     <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
-    <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
-    <link rel="stylesheet" href='../../../layuiadmin/style/iconfont/iconfont.css' media="all">
+    <link rel="stylesheet" href='../../../layuiadmin/style/index.css' media="all">
     <link rel="stylesheet" href="../../../layuiadmin/style/zTree/zTreeStyle/zTreeStyle.css" media="all">
 </head>
 
 <body>
     <div class="layui-fluid">
-        <div class="layui-row layui-col-space5">
+        <div class="layui-row layui-col-space10">
             <div class="layui-col-md4">
-                <div class="layui-card">
+                <div class="layui-card main_hight">
                     <div class="layui-elem-quote layui-card-header">角色列表</div>
                     <div class="layui-card-body">
                         <div id='treeRole'>
@@ -27,8 +26,8 @@
                     </div>
                 </div>
             </div>
-            <div class="layui-col-md8">
-                <div class="layui-card">
+            <div class="layui-col-md8 ">
+                <div class="layui-card main_hight">
                     <div class="layui-elem-quote layui-card-header" id='formTitle'>授权点</div>
                     <div class="layui-tab layui-tab-card">
                         <ul class="layui-tab-title">
@@ -36,7 +35,7 @@
                             <li>功能访问授权</li>
                             <li>角色关系关联</li>
                         </ul>
-                        <div class="layui-tab-content" style="height: 600px;">
+                        <div class="layui-tab-content">
                             <div class="layui-tab-item layui-show">
                                 <div id="treeOrgan" class="ztree"></div>
                                 <div class="layui-row">
@@ -69,6 +68,7 @@
                     </div>
                 </div>
             </div>
+            
         </div>
 
     </div>

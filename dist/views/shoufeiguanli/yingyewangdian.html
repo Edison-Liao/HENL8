@@ -59,12 +59,6 @@
             </div>
         </div>
         <div class="layui-form-item layui-inline">
-            <label class="layui-form-label ">公司编码</label>
-            <div class="layui-input-inline">
-                <input type="text" name="CompanyCoding" lay-verify="required" value="" autocomplete="off" class="layui-input" >
-            </div>
-        </div>
-        <div class="layui-form-item layui-inline">
             <label class="layui-form-label ">描述</label>
             <div class="layui-input-inline">
                 <input type="text" name="Description" lay-verify="required" value="" autocomplete="off" class="layui-input">
@@ -94,17 +88,23 @@
                 <input type="text" name="SortNum"   autocomplete="off" value="" class="layui-input" >
             </div>
         </div>
-        <div class="layui-form-item layui-inline">
-            <label class="layui-form-label ">营业员ID</label>
-            <div class="layui-input-inline">
-                <input type="text" name="LeaderID" value="" autocomplete="off" class="layui-input">
-            </div>
-        </div>
-        <div class="layui-form-item layui-inline">
-            <label class="layui-form-label ">营业员名称</label>
-            <div class="layui-input-inline">
-                <input type="text" name="LeaderName"  value="" autocomplete="off" class="layui-input" >
-            </div>
+        <div class="layui-form-item">
+          <label class="layui-form-label">选择营业员</label>
+          <div class="layui-input-inline">
+            <select name="P1" lay-filter="province" id="province" >
+              <option></option>
+            </select>
+          </div>
+          <div class="layui-input-inline">
+            <select name="C1" lay-filter="city" id="city" >
+              <option></option>
+            </select>
+          </div>
+          <div class="layui-input-inline">
+            <select name="A1" lay-filter="area" id="area" >
+              <option></option>
+            </select>
+          </div>
         </div>
         <div class="layui-form-item layui-hide">
             <input type="button" lay-submit lay-filter="LAY-wangdian-add-submit" id="LAY-wangdian-add-submit" value="确认">

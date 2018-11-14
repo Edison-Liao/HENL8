@@ -5,19 +5,22 @@ layui
   .extend({
     index: "lib/index" //主入口模块
   })
-  .use(["index", "table",'consts'], function() {
+  .use(["index", "table",'consts','common'], function() {
     
     var $ = layui.$,
     table = layui.table,
+    common = layui.common
     form = layui.form;
     var laypage = layui.laypage;
-
+    var option = {
+      baseUrl:layui.setter.revenueUrl
+    }
     var wangdianTable = table.render({
       elem: "#LAY-yingyewangdian_SKTable",
       id:"LAY-yingyewangdian_SKTable",
-      url: layui.setter.baseUrl + "/api/BusinessHall/query/list", //接口
+      url: layui.setter.revenueUrl + "/api/BusinessHall/query/list", //接口
       //response:layui.setter.response,
-      where:{"Data.CompanyCoding":"88888888","Method":"list"},
+      where:{"Method":"list"},
       parseData:layui.setter.parseData,
       request: layui.setter.request,
       cols: [
@@ -52,7 +55,7 @@ layui
     var shoukuanshebeiTable = table.render({
       elem: "#LAY-shoukuanmanageTable",
       id:"LAY-shoukuanmanageTable",
-      url: layui.setter.baseUrl + "/api/BusinessHallDevice/query/list", //接口
+      url: layui.setter.revenueUrl + "/api/BusinessHallDevice/query/list", //接口
       where:{"Data.CompanyCoding":"88888888","Method":"list"},
       parseData:layui.setter.parseData,
       request: layui.setter.request,
@@ -199,8 +202,6 @@ layui
         layer.load(0, { shade: false });
         var dataBean = layui.consts.basePostData();
         dataBean.Data = para;
-        dataBean.Data.CompanyCoding = "88888888";
-        dataBean.Data.CompanyName = "88888888";
         dataBean.Method="insert";
         var str1 = JSON.stringify(dataBean);
         if(dataBean.Data.FixedUserFlag){
@@ -211,7 +212,7 @@ layui
             console.info("营业员已选择")
             $.ajax({
               type: "Post",
-              url: layui.setter.baseUrl + "/api/BusinessHallDevice/insert",
+              url: layui.setter.revenueUrl + "/api/BusinessHallDevice/insert",
               data: str1,
               async: true,
               dataType: "json",
@@ -242,7 +243,7 @@ layui
           console.info("营业员为空")
             $.ajax({
               type: "Post",
-              url: layui.setter.baseUrl + "/api/BusinessHallDevice/insert",
+              url: layui.setter.revenueUrl + "/api/BusinessHallDevice/insert",
               data: str1,
               async: true,
               dataType: "json",
@@ -276,13 +277,13 @@ layui
         layer.closeAll();
         layer.load(0, { shade: false });
         var dataBean = layui.consts.basePostData();
-        dataBean.Data = {"Key":para.Me.Id}
+        dataBean.Data = {"Id":para.Me.Id}
         dataBean.Method = "remove"
         var str1 = JSON.stringify(dataBean);
         console.info(str1)
         $.ajax({
           type: "delete",
-          url: layui.setter.baseUrl + "/api/BusinessHallDevice/remove",
+          url: layui.setter.revenueUrl + "/api/BusinessHallDevice/remove",
           async: true,
           data: str1,
           dataType: "json",
@@ -311,7 +312,7 @@ layui
       $.ajax({
         type: "get",
         url:
-        layui.setter.baseUrl + "/api/BusinessHallDevice/query/key?Data.key="+para.Me.Id+"&Method=key",
+        layui.setter.revenueUrl + "/api/BusinessHallDevice/query/key?Data.key="+para.Me.Id+"&Method=key",
         async: true,
         success: function(data) {
           console.info(para.BusinessHall_Name)
@@ -351,7 +352,7 @@ layui
                   
                   $.ajax({
                     type: "Put",
-                    url: layui.setter.baseUrl + "/api/BusinessHallDevice/update",
+                    url: layui.setter.revenueUrl + "/api/BusinessHallDevice/update",
                     data: str1,
                     async: true,
                     dataType: "json",
@@ -403,11 +404,11 @@ layui
             })
             
             if(res.FixedUserFlag){
-              assistant = findObjectByKeyVal(departments,"Title",res.FixedUser_Name)
+              assistant = common.findObjectByKeyVal(departments,"Title",res.FixedUser_Name)
               //console.info(assistant)
-              position = findObjectByKeyVal(departments,"Id",assistant.ParentId)
+              position = common.findObjectByKeyVal(departments,"Id",assistant.ParentId)
               //console.info(position)
-              department = findObjectByKeyVal(departments,"Id",position.ParentId)
+              department = common.findObjectByKeyVal(departments,"Id",position.ParentId)
               console.info(department.Title,position.Title,assistant.Title)
               $("#province").removeAttr("disabled");  
               $("#city").removeAttr("disabled"); 
@@ -485,7 +486,7 @@ layui
       add: function() {
         $.ajax({
           type: "Get",
-          url: layui.setter.magUrl + "/api/Organ/treeview", 
+          url: layui.setter.baseUrl + "/api/Organ/treeview", 
           async: true,
           headers: {
             Accept: "application/json, text/javascript, */*; q=0.01",
@@ -528,7 +529,7 @@ layui
               
               $.ajax({
                 type: "get",
-                url: layui.setter.baseUrl + "/api/Common/GetInsertGuid",
+                url: layui.setter.revenueUrl + "/api/Common/GetInsertGuid",
                 async: true,
                 dataType: "json",
                 headers: {
@@ -640,7 +641,7 @@ layui
         //do something
         $.ajax({
           type: "Get",
-          url: layui.setter.magUrl + "/api/Organ/treeview", 
+          url: layui.setter.baseUrl + "/api/Organ/treeview", 
           async: true,
           headers: {
             Accept: "application/json, text/javascript, */*; q=0.01",
@@ -666,22 +667,4 @@ layui
       }
     });
 
-    var findObjectByKeyVal= function (obj, key, val) {
-      if (!obj || (typeof obj === 'string')) {
-        return null
-      }
-      if (obj[key] === val) {
-        return obj
-      }
-
-      for (var i in obj) {
-        if (obj.hasOwnProperty(i)) {
-          var found = findObjectByKeyVal(obj[i], key, val)
-          if (found) {
-            return found
-          }
-        }
-      }
-      return null
-    }
   });

@@ -82,7 +82,7 @@ layui.define(function(exports) {
     },
     //时间 格式化 2018-11-11=>20181111
     formatRequertDate(data) {
-      if (typeof data !== "string" && data.length > 1) {
+      if (typeof data !== "string" || data.length > 1) {
         console.log("时间格式不符合规范");
         return "";
       }
@@ -185,9 +185,28 @@ layui.define(function(exports) {
       return null;
     }
   };
+
+  var findObjectByKeyVal = function (obj, key, val) {
+      if (!obj || (typeof obj === 'string')) {
+        return null
+      }
+      if (obj[key] === val) {
+        return obj
+      }
+
+      for (var i in obj) {
+        if (obj.hasOwnProperty(i)) {
+          var found = findObjectByKeyVal(obj[i], key, val)
+          if (found) {
+            return found
+          }
+        }
+      }
+      return null
+    }
   //对外暴露的接口
   exports(
     "common",
-    $.extend(commonFunction, { ajaxFun: ajaxFun }, { appResult, appResult })
+    $.extend(commonFunction, { ajaxFun: ajaxFun }, { appResult, appResult },{findObjectByKeyVal: findObjectByKeyVal})
   );
 });
