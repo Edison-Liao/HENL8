@@ -1,8 +1,8 @@
 /*
- * @Author: hongChuan Zhang 
- * @Date: 2018-10-10 11:35:11 
+ * @Author: hongChuan Zhang
+ * @Date: 2018-10-10 11:35:11
  * @Last Modified by: hongChuan Zhang
- * @Last Modified time: 2018-11-08 16:32:58
+ * @Last Modified time: 2018-11-14 21:04:08
  */
 //gulp  自动构建
 var pkg = require("./package.json");

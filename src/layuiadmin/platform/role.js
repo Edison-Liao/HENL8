@@ -89,19 +89,11 @@ layui
         },
         server: {
           getTreeData: function() {
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + "/api/Role/treeview",
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll("loading");
-                console.log(data);
-                if (data.IsSucceed) {
-                  console.log(data.Result.TreeNodes);
+            common
+              .ajaxFun("get", "/api/Role/treeview")
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   var nodeData = data.Result.TreeNodes;
                   function currData(data) {
                     if (data.length > 0) {
@@ -118,14 +110,13 @@ layui
                   var nodeData1 = currData(nodeData);
                   organ.render.renderTree(nodeData);
                 } else {
-                  layer.msg("获取数据失败" + data, { icon: 5 });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
+            //
           },
           getNodedata: function(flage, id) {
             var urlID = "";
@@ -138,19 +129,12 @@ layui
             } else {
               return;
             }
-            layer.load(2);
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                console.log(data);
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("get", urlID)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   organ.baseData.nodeData = data.Result;
                   var dataNode = data.Result;
                   if (flage === "roleCatalog") {
@@ -167,16 +151,12 @@ layui
                     });
                   }
                 } else {
-                  layer.msg("获取节点数据失败! " + data.Errors[0].Message, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           addOrgan: function(data, url, flage) {
             var dataBean = layui.consts.basePostData();
@@ -186,69 +166,44 @@ layui
             dataBean.Data = data;
             console.log(data);
             var str1 = JSON.stringify(dataBean);
-            layer.load();
-            $.ajax({
-              type: "post",
-              url: layui.setter.baseUrl + url,
-              data: str1,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                console.log(data);
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("post", url, str1)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   $("#treeOrgan").html("");
                   organ.server.getTreeData();
                   layer.msg("添加成功!", { icon: 6 });
                 } else {
-                  layer.msg("增加数据失败! " + data.Errors[0].Message, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           eidtOrgan: function(data, url) {
             var dataBean = layui.consts.basePostData();
             data.Id = organ.baseData.id;
             dataBean.Data = data;
-
             var str1 = JSON.stringify(dataBean);
-            layer.load();
-            $.ajax({
-              type: "put",
-              url: layui.setter.baseUrl + url + "/" + organ.baseData.id,
-              data: str1,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                console.log(data);
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("put", url + "/" + organ.baseData.id, str1)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   $("#treeOrgan").html("");
                   organ.server.getTreeData();
                   layer.msg("修改成功!", { icon: 6 });
                 } else {
-                  layer.msg("增加数据失败! " + data.Errors[0].Message, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           moveNodeData: function(data, isRise) {
             var urlID = "";
@@ -257,36 +212,24 @@ layui
             } else {
               return;
             }
-            layer.load();
-            $.ajax({
-              type: "put",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll("loading");
-                console.log(data);
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("put", urlID)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   $("#treeOrgan").html("");
                   organ.server.getTreeData();
                   layer.msg("数据移动成功", { icon: 1 });
                 } else {
-                  layer.msg("数据操作失败" + data.Errors[0].Message, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           delet: function(flage, id) {
-            layer.load();
             var urlID = "";
             if (flage === "roleInfo" || flage === "roleCatalog") {
               urlID = "/api/Role/" + id;
@@ -294,40 +237,29 @@ layui
               layer.closeAll();
               return;
             }
-            $.ajax({
-              type: "DELETE",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                console.log(data);
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("DELETE", urlID)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   $("#treeOrgan").html("");
                   organ.server.getTreeData();
                   layer.alert("删除成功", {
                     icon: 1
                   });
                 } else {
-                  layer.msg("获取节点数据失败! " + data.Errors[0].Message, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           }
         },
         render: {
           renderTree: function(data) {
             //树形渲染
-
             organ.baseData.treeObj = layui.z_treeConfig.renderTree(
               data,
               "treeOrgan",

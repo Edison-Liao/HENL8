@@ -100,18 +100,11 @@ layui
         },
         server: {
           getTreeData: function() {
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + "/api/Navigation/treeview/manager",
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll("loading");
-                console.log(data);
-                if (data.IsSucceed) {
+            common
+              .ajaxFun("get", "/api/Navigation/treeview/manager")
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   console.log(data.Result.TreeNodes);
                   var nodeData = data.Result.TreeNodes;
                   function currData(data) {
@@ -130,40 +123,27 @@ layui
                   organ.render.renderTree(nodeData1);
                   organ.render.renderFormData("clear");
                 } else {
-                  layer.msg("获取数据失败" + data.Errors[0].Description, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           ModulePermission: function() {
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + "/api/Module/deep/permission",
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll("loading");
-                console.log(data, "~~~");
-                if (data.IsSucceed) {
+            common
+              .ajaxFun("get", "/api/Module/deep/permission")
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   organ.render.loadSelect(data.Result);
                 } else {
-                  layer.msg("获取数据失败" + data, { icon: 5 });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           getNodedata: function(flage, id) {
             console.log("执行");
@@ -173,29 +153,22 @@ layui
             } else {
               return;
             }
-            layer.load(2);
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                console.log(data);
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("get", urlID)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   organ.baseData.nodeData = data.Result;
                   var dataNode = data.Result;
                   organ.render.renderFormData(flage, dataNode);
+                } else {
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           addOrgan: function(data, url, flage) {
             //var dataBean = layui.setter.basePostData;
@@ -209,68 +182,44 @@ layui
             dataBean.Data = data;
 
             var str1 = JSON.stringify(dataBean);
-            layer.load();
-            $.ajax({
-              type: "post",
-              url: layui.setter.baseUrl + url,
-              data: str1,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                console.log(data);
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("post", url, str1)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   $("#treeOrgan").html("");
                   organ.server.getTreeData();
                   layer.msg("添加成功!", { icon: 6 });
                 } else {
-                  layer.msg("增加数据失败! " + data.Errors[0].Message, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           eidtOrgan: function(data, url) {
             var dataBean = layui.consts.basePostData();
             data.Id = organ.baseData.id;
             dataBean.Data = data;
             var str1 = JSON.stringify(dataBean);
-            layer.load();
-            $.ajax({
-              type: "put",
-              url: layui.setter.baseUrl + url + "/" + organ.baseData.id,
-              data: str1,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                console.log(data);
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("put", url + "/" + organ.baseData.id, str1)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   $("#treeOrgan").html("");
                   organ.server.getTreeData();
                   layer.msg("修改成功!", { icon: 6 });
                 } else {
-                  layer.msg("增加数据失败! " + data.Errors[0].Message, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           moveNodeData: function(data, isRise) {
             var urlID = "";
@@ -284,32 +233,21 @@ layui
             layer.msg("暂未开放");
             return;
             layer.load();
-            $.ajax({
-              type: "put",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll("loading");
-                console.log(data);
-                if (data.IsSucceed) {
+            common
+              .ajaxFun("put", url + "/" + organ.baseData.id, str1)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   $("#treeOrgan").html("");
                   organ.server.getTreeData();
-                  layer.msg("数据移动成功", { icon: 1 });
+                  layer.msg("移动成功!", { icon: 6 });
                 } else {
-                  layer.msg("数据操作失败" + data.Errors[0].Description, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           delet: function(flage, id) {
             layer.load();
@@ -317,34 +255,22 @@ layui
             if (flage === "nav") {
               urlID = "/api/Navigation/" + id;
             }
-            $.ajax({
-              type: "DELETE",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                console.log(data);
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("DELETE", urlID)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   $("#treeOrgan").html("");
                   organ.server.getTreeData();
-                  layer.alert("删除成功", {
-                    icon: 1
-                  });
+                  layer.alert("删除成功", { icon: 1 });
                 } else {
-                  layer.msg("获取节点数据失败! " + data.Errors[0].Description, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           }
         },
         render: {
@@ -468,8 +394,13 @@ layui
             organ.render.disabledBtton(node.Flag);
             //organ.currData.getTreeNodeName(data, node.ParentId);
             var PidNode = organ.baseData.treeObj.getNodeByTId(node.parentTId);
+            try {
+              $(".topName").val(PidNode.Title);
+            } catch (err) {
+              console.log(err);
+              $(".topName").val("暂无数据");
+            }
 
-            $(".topName").val(PidNode.Title);
             $(".submit").html("立即修改");
           }
         }

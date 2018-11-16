@@ -67,42 +67,34 @@
             base: '../../../layuiadmin/' //静态资源所在路径
         }).extend({
             index: 'lib/index' //主入口模块
-        }).use(['index', 'useradmin', 'form'], function () {
+        }).use(['index', 'useradmin', 'form','common'], function () {
             var $ = layui.$,
-                form = layui.form;
+                form = layui.form,
+                common=layui.common;
             var userUserClassifyForm = {
                 init: function () {
                     this.UserClassify();
                 },
                 UserClassify: function () {
-                    $.ajax({
-                        type: "get",
-                        url: layui.setter.baseUrl + "/api/User/groups",
-                        async: true,
-                        dataType: "json",
-                        headers: {
-                            Accept: "application/json",
-                            "Content-Type": "application/json"
-                        },
-                        success: function (data) {
-                            layer.closeAll();
-                            console.log(data);
-                            if (data.IsSucceed) {
-                                var selectData = data.Result
+
+                    common
+                        .ajaxFun("get", "/api/User/groups")
+                        .then(function (data) {
+                            if (common.appResult.isSucceeded(data)) {
+                                 var selectData = data.Result
                                 $('#userGroupSelect').append('<option value=""></option>');
                                 for (var i in selectData) {
                                     $('#userGroupSelect').append('<option value= ' + selectData[i].Value + '>' + selectData[i].Text + '</option>');
                                 }
                                 form.render('select');
                             } else {
-                                layer.msg("获取用户类型失败" + data, { icon: 5 });
+                                common.appResult.loadErrorText(res);
                             }
-                        },
-                        error: function (err) {
-                            layer.closeAll();
-                            layer.msg("数据操作失败", { icon: 5 });
-                        }
-                    });
+                        })
+                        .fail(err => {
+                            console.log(err);
+                        });
+                 
                 }
             }
             userUserClassifyForm.init()

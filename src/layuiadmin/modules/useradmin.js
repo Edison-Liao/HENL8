@@ -113,52 +113,33 @@ layui.define(["table", "form", "common", "consts"], function(exports) {
         });
     },
     unLockUser: function(data) {
-      layer.closeAll();
-      layer.load(0, { shade: false });
-      $.ajax({
-        type: "put",
-        url: layui.setter.baseUrl + "/api/User/lockout/cancel/" + data.Id,
-        data: {},
-        async: true,
-        success: function(data) {
-          layer.closeAll();
-          console.log(data);
-          if (data.IsSucceed) {
+      common
+        .ajaxFun("put", "/api/User/lockout/cancel/" + data.Id)
+        .then(function(res) {
+          if (common.appResult.isSucceeded(res)) {
             table.reload("LAY-user-manage"); //数据刷新
             layer.msg("数据解锁成功", { time: 4000, icon: 6 });
           } else {
-            layer.msg("失败" + data, { icon: 5 });
+            common.appResult.loadErrorText(res);
           }
-        },
-        error: function(err) {
-          layer.closeAll();
-          layer.msg("数据加载失败", { icon: 5 });
-        }
-      });
+        })
+        .fail(err => {
+          console.log(err);
+        });
     },
     delete: function(data) {
-      layer.closeAll();
-      layer.load(0, { shade: false });
-      $.ajax({
-        type: "get",
-        url:
-          layui.setter.baseUrl + "/api/company/search/pageIndex/1/pageSize/99",
-        async: true,
-        success: function(data) {
-          console.log(data);
-          if (data.IsSucceed) {
-            layer.closeAll();
-            adminCompany.companyList();
+      common
+        .ajaxFun("delete")
+        .then(function(res) {
+          if (common.appResult.isSucceeded(res)) {
+            console.log("用户删除成功!");
           } else {
-            layer.closeAll();
-            layer.msg("失败" + res.Errors[0].Description, { icon: 5 });
+            common.appResult.loadErrorText(res);
           }
-        },
-        error: function(err) {
-          layer.closeAll();
-          layer.msg("数据加载失败", { icon: 5 });
-        }
-      });
+        })
+        .fail(err => {
+          console.log(err);
+        });
     },
     edit: function(data) {
       console.log(data);

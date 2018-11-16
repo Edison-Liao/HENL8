@@ -193,18 +193,11 @@ layui
         },
         server: {
           getRoleTreeData: function() {
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + "/api/Role/treeview",
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll("loading");
-                if (data.IsSucceed) {
-                  console.log(data.Result.TreeNodes);
+            common
+              .ajaxFun("get", "/api/Role/treeview")
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   var nodeData = data.Result.TreeNodes;
                   function currData(data) {
                     if (data.length > 0) {
@@ -225,30 +218,20 @@ layui
                   //z-tree树形结构渲染 数据,domID
                   auth.render.renderRoleTree(nodeData1);
                 } else {
-                  layer.msg("获取角色数据失败!" + data.Errors[0].Message, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           getAccessOrganTreeData: function() {
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + "/api/organ/treeview",
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll("loading");
-                if (data.IsSucceed) {
-                  console.log(data.Result.TreeNodes);
+            //
+            common
+              .ajaxFun("get", "/api/organ/treeview")
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   var nodeData = data.Result.TreeNodes;
                   function currData(data, userflage) {
                     if (data.length > 0) {
@@ -280,29 +263,19 @@ layui
                   auth.render.renderAccessOrganTree(nodeData1);
                   auth.render.renderAccessOrganTreeUser(nodeData2);
                 } else {
-                  layer.msg("获取数据失败" + data.Errors[0].Message, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           getAccessRightTreeData: function() {
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + "/api/Module/deep/permission",
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll("loading");
-                if (data.IsSucceed) {
+            common
+              .ajaxFun("get", "/api/Module/deep/permission")
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //渲染树
                   var nodeData = data.Result;
                   function currData(data) {
                     if (data.length > 0) {
@@ -328,16 +301,12 @@ layui
 
                   auth.render.renderAccessRightTree(nodeData1);
                 } else {
-                  layer.msg("获取数据失败" + data.Errors[0].Message, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           getUserAccessOrganNode: function(flage, id) {
             if (flage === "userTable") {
@@ -345,29 +314,20 @@ layui
             } else {
               return;
             }
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + "/api/Role/accessOrgan/" + id,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("get", "/api/Role/accessOrgan/" + id)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //选中节点
                   auth.render.setTreeNodeCheck(data.Result, "treeOrgan");
                 } else {
-                  layer.msg("获取节点数据失败! " + data.Errors[0].Message, {
-                    icon: 5
-                  });
+                  common.appResult.loadErrorText(data);
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           getUserAccessRightNode: function(flage, id) {
             var urlID = "";
@@ -376,18 +336,12 @@ layui
             } else {
               return;
             }
-            layer.load(2);
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("get", urlID)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //选中节点
                   auth.render.setTreeNodeCheck(data.Result, "treeAccessRight");
                 } else {
                   layer.msg(
@@ -397,12 +351,10 @@ layui
                     }
                   );
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           getRoleWidthUserRightNode: function(flage, id) {
             if (flage === "userTable") {
@@ -410,29 +362,21 @@ layui
             } else {
               return;
             }
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                if (data.IsSucceed) {
+            common
+              .ajaxFun("get", urlID)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //选中节点
                   auth.render.setTreeNodeCheck(data.Result, "roleTree");
                 } else {
                   layer.msg("获取节点数据失败! " + data.Errors[0].Message, {
                     icon: 5
                   });
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           putRoleAccessRight: function(flage, data, userId) {
             var urlID = "";
@@ -448,19 +392,12 @@ layui
             var dataBean = layui.consts.basePostData();
             dataBean.Data = data;
             var str1 = JSON.stringify(dataBean);
-            layer.load();
-            $.ajax({
-              type: "put",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              data: str1,
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                if (data.IsSucceed) {
+            //
+            common
+              .ajaxFun("put", urlID, str1)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
+                  //选中节点
                   console.log(data.Result, "当前角色点");
                   layer.msg("更新权限成功!", { icon: 6 });
                 } else {
@@ -468,12 +405,10 @@ layui
                     icon: 5
                   });
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           }
         },
         render: {

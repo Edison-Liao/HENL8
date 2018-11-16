@@ -81,13 +81,26 @@ layui.define(function(exports) {
       return theRequest;
     },
     //时间 格式化 2018-11-11=>20181111
-    formatRequertDate(data) {
+    formatRequertDate: function(data) {
       if (typeof data !== "string" || data.length > 1) {
         console.log("时间格式不符合规范");
         return "";
       }
       var trimDate = $.trim(data);
       return trimDate.split("-").join("");
+    },
+    setSessionStorage: function(key, data) {
+      try {
+        if (typeof data === "object") {
+          sessionStorage.setItem(key, JSON.stringify(data));
+        } else {
+          sessionStorage.setItem(key, data);
+        }
+      } catch (Exception) {
+        console.log("超出本地存储限额！");
+        layer.msg("存储数据失败!");
+        return false;
+      }
     }
   };
 
@@ -100,10 +113,12 @@ layui.define(function(exports) {
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest" // 用于判断是否为ajax请求
+        "X-Requested-With": "XMLHttpRequest", // 用于判断是否为ajax请求
+        Authorization: `Bearer ${sessionStorage.getItem("access_token")}` //token
       },
       baseUrl: layui.setter.baseUrl
     };
+
     $.extend(_option, option);
     var load = "";
     //设置Promise
@@ -186,27 +201,32 @@ layui.define(function(exports) {
     }
   };
 
-  var findObjectByKeyVal = function (obj, key, val) {
-      if (!obj || (typeof obj === 'string')) {
-        return null
-      }
-      if (obj[key] === val) {
-        return obj
-      }
+  var findObjectByKeyVal = function(obj, key, val) {
+    if (!obj || typeof obj === "string") {
+      return null;
+    }
+    if (obj[key] === val) {
+      return obj;
+    }
 
-      for (var i in obj) {
-        if (obj.hasOwnProperty(i)) {
-          var found = findObjectByKeyVal(obj[i], key, val)
-          if (found) {
-            return found
-          }
+    for (var i in obj) {
+      if (obj.hasOwnProperty(i)) {
+        var found = findObjectByKeyVal(obj[i], key, val);
+        if (found) {
+          return found;
         }
       }
-      return null
     }
+    return null;
+  };
   //对外暴露的接口
   exports(
     "common",
-    $.extend(commonFunction, { ajaxFun: ajaxFun }, { appResult, appResult },{findObjectByKeyVal: findObjectByKeyVal})
+    $.extend(
+      commonFunction,
+      { ajaxFun: ajaxFun },
+      { appResult, appResult },
+      { findObjectByKeyVal: findObjectByKeyVal }
+    )
   );
 });

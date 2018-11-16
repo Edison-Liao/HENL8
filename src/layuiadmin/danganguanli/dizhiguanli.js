@@ -151,10 +151,8 @@ layui
         var dataBean = layui.consts.basePostData();
         dataBean.Data = data;
         dataBean.Method="insert";
-        
-        
         var str1 = JSON.stringify(dataBean);
-        //console.log(str1);
+        console.log(str1);
         common
           .ajaxFun("post", "/api/address/insert", str1,option)
           .then(function(res) {

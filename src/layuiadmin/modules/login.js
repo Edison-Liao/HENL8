@@ -5,42 +5,52 @@ layui
   .extend({
     index: "lib/index" //主入口模块
   })
-  .use(["index", "cookie"], function() {
+  .use(["index", "cookie", "consts"], function() {
     var $ = layui.$,
       setter = layui.setter,
       admin = layui.admin,
       form = layui.form,
+      consts = layui.consts,
       router = layui.router(),
       search = router.search;
     // form.render();
-    console.log();
-    const { protocol } = window.location; // http:
-    const local = window.location.hostname; // 192.168.5.191
-    const { port } = window.location; // 8000
-    console.log(protocol, local, port, "地址信息");
 
-    const userManagerConfig = {
-      authority: setter.authorityUrl, //认证服务器
-      client_id: "js", // 客户端标示
-      automaticSilentRenew: true,
-      popup_redirect_uri: `${protocol}//${local}:${port}`, // 重定向目标
-      // response_type: 'id_token',
-      post_logout_redirect_uri: `${protocol}//${local}:${port}/user/login`, // 退出URL
-      redirect_uri: `${protocol}//${local}:${port}`,
-      response_type: "id_token token",
-      scope: "openid profile api1",
-      filterProtocolClaims: true,
-      loadUserInfo: true
-    };
-    var manager = new Oidc.UserManager(userManagerConfig);
+    var manager = new Oidc.UserManager(consts.userManagerConfig);
     var user;
+    ///////////////////////////////
+    //event 事件
+    ///////////////////////////////
+
+    manager.events.addAccessTokenExpiring(function() {
+      console.log("token expiring");
+    });
+    manager.events.addAccessTokenExpired(function() {
+      console.log("token expired");
+    });
+
+    manager.events.addSilentRenewError(function(e) {
+      console.log("silent renew error", e.message);
+    });
     manager.events.addUserLoaded(function(loadedUser) {
       user = loadedUser;
-      console.log(user, "登录信息");
-      window.location.href = "./index.html";
+      manager.getUser().then(function(res) {
+        console.log(res, "getUser loaded user after userLoaded event fired");
+      });
     });
+    //event 事件结束
+    new Oidc.UserManager().signinSilentCallback();
+    manager
+      .getUser()
+      .then(function(user) {
+        console.log(user, "用户信息");
+      })
+      .catch(e => {
+        console.log(e, "错误信息");
+      });
+
     manager
       .signinRedirectCallback(function(data) {
+        console.log(data);
         window.location.href = "./index.html";
       })
       .catch(function(error) {
@@ -50,20 +60,25 @@ layui
       // true param will keep popup window open
       manager.signoutPopupCallback(true);
       manager.clearStaleState();
-      manager.signoutRedirectCallback(function(data) {
-        console.log(data, "退出");
-      });
-      manager.signoutRedirect(function(data) {
-        console.log(data, "退出");
-      });
+      manager
+        .signoutRedirect({ state: "some data" })
+        .then(function(resp) {
+          //mgr.signoutRedirect().then(function(resp) {
+          log("signed out", resp);
+        })
+        .catch(function(err) {
+          log(err);
+        });
     });
     $(".login").on("click", function() {
       manager
-        .signinRedirect(function(data) {
-          console.log(data);
+        .signinRedirect({ state: "HL8_SASS" })
+        .then(function() {
+          console.log("signinRedirect done");
         })
-        .catch(function(error) {
-          console.error("error while logging in through the popup", error);
+        .catch(function(err) {
+          layer.msg("授权登录出错!", { icon: 5 });
+          console.log(err);
         });
     });
   });

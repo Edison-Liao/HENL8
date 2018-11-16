@@ -40,6 +40,20 @@ layui
           .fail(err => {
             console.log(err);
           });
+      },
+      loadUserClassify: function() {
+        common
+          .ajaxFun("get", "/api/User/groups")
+          .then(function(data) {
+            if (common.appResult.isSucceeded(data)) {
+              render.loadSelect(data.Result);
+            } else {
+              common.appResult.loadErrorText(res);
+            }
+          })
+          .fail(err => {
+            console.log(err);
+          });
       }
     };
     //事件
@@ -90,7 +104,22 @@ layui
         });
       }
     };
-
+    var render = {
+      loadSelect: function(selectData) {
+        var op = "<option value=''></option>";
+        for (var i in selectData) {
+          op +=
+            "<option value=" +
+            selectData[i].Value +
+            ">" +
+            selectData[i].Text +
+            "</option>";
+        }
+        $("#userGroupSelect").html(op);
+        form.render("select");
+      }
+    };
+    userSeverEvent.loadUserClassify();
     $(".layui-btn.layuiadmin-btn-useradmin").on("click", function() {
       var type = $(this).data("type");
       active[type] ? active[type].call(this) : "";
