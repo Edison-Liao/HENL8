@@ -21,6 +21,8 @@ layui.define(["table", "form", "common", "consts"], function(exports) {
               return "普通用户";
             } else if ((d.GroupClassify = "manager")) {
               return "业务管理员";
+            } else if ((d.GroupClassify = "guest")) {
+              return "业务管理员";
             } else {
               return "未知类别";
             }

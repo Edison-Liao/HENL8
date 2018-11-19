@@ -108,19 +108,10 @@ layui
             } else {
               return;
             }
-            layer.load(2);
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                console.log(data);
-                if (data.IsSucceed) {
+            common
+              .ajaxFun("get", urlID)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
                   region.baseData.nodeData = data.Result;
                   var dataNode = data.Result;
                   if (flage === "roleCatalog") {
@@ -141,12 +132,10 @@ layui
                     icon: 5
                   });
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           addOrgan: function(data, url, flage) {
             var dataBean = layui.consts.basePostData();

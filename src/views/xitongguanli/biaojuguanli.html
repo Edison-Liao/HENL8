@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>表具管理</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="../../../layuiadmin/style/admin.css" media="all">
+</head>
+
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-elem-quote layui-row ">
+        <form class="layui-form layui-form-pane" action="javascript:;">
+          <div class="layui-form-item">
+            <button class="layui-btn layuiadmin-btn-meterAdd" data-type="add">添加</button>
+          </div>
+        </form>
+              <!--
+              <div class="layui-elem-quote layui-row ">
+                <div class="layui-col-xs2 layui-col-sm2 layui-col-md2">
+                  <form class="layui-form layui-form-pane" action="javascript:;">
+                    <div class="layui-form-item">
+                      <button class="layui-btn layuiadmin-btn-fireAdd" data-type="add">添加</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="layui-card-body">
+                <table id="LAY-dianhuoTable" lay-filter="LAY-dianhuoTable"></table>
+                <div id='page'></div>
+                <script type="text/html" id="imgTpl"> 
+                  <img style="display: inline-block; width: 50%; height: 100%;" src= {{ d.avatar }}>
+                </script>
+                <script type="text/html" id="LAY-dianhuoTable-barOperation">
+                  <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+                  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+                </script>
+              </div>
+              -->
+      </div>
+      <div class="layui-card-body">
+        <table id="LAY-meterTable" lay-filter="LAY-meterTable"></table>
+        <div id='page'></div>
+        <script type="text/html" id="imgTpl"> 
+          <img style="display: inline-block; width: 50%; height: 100%;" src= {{ d.avatar }}>
+        </script>
+        <script type="text/html" id="LAY-meterTable-barOperation">
+          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="detail"><i class="layui-icon layui-icon-read"></i>查看</a>
+          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon layui-icon-delete"></i>删除</a>
+        </script>
+        <script type="text/html" id="LAY-fireTable-barOperation">
+          <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="fireEdit"><i class="layui-icon layui-icon-edit"></i>编辑</a>
+          <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="fireDel"><i class="layui-icon layui-icon-delete"></i>删除</a>
+        </script>
+      </div>
+    </div>
+  </div>
+  
+  <div id="lock-meterAdd-from" lay-filter="lock-meterAdd-from" class="layui-form" style="border-top: 1px solid #ccc;display: none; padding: 20px 0 0 0;">
+    <div class="layui-tab layui-tab-card" lay-filter="meterAdd-tab">
+      <ul class="layui-tab-title">
+        <li class="layui-this" lay-id="meterInfo">表具信息</li>
+        <li lay-id="fireInfo">点火信息</li>
+      </ul>
+      <div class="layui-tab-content" >
+        <div class="layui-tab-item layui-show">
+          <div id="lock-meterAddDetail-from" lay-filter="lock-meterAddDetail-from" class="layui-form" style="border-top: 1px solid #ccc; padding: 20px 0 0 0;">
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">地址*</label>
+              </div>
+              <div class="layui-col-sm8">
+                <input type="text" name="Address"  autocomplete="off" disabled  lay-verify="notNull" class="layui-input"></input>
+              </div>
+              <div class="layui-col-sm2">
+                <button class="layui-btn LAY-address-search-submit" lay-filter="LAY-address-search-submit" id="LAY-address-search-submit"
+                  name="LAY-address-search-submit">
+                  <i class="layui-icon">&#xe615;</i> 查询
+                </button>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">表状态*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="MeterStatus" id="MeterStatus" lay-filter="MeterStatus" lay-verify="notDefault" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">付费模式*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="MeterPayMode" id="MeterPayMode" lay-filter="MeterPayMode" lay-verify="notDefault" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">阶梯人数*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="StepFamilyMembers"   autocomplete="off" lay-verify="number" class="layui-input"></input>
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">阶梯结束时间*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="StepFamilyMemberEndDate" id="StepFamilyMemberEndDate" lay-verify="date"  class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">价格标准*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="PriceTypeId" id="PriceTypeId" lay-filter="PriceTypeId" lay-verify="notDefault" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">表厂家*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="MeterFactoryId" id="MeterFactoryId" lay-filter="MeterFactoryId" lay-verify="notDefault" lay-search>
+                  <option >全部</option>
+                  <option value="af1f8ffd-66e4-4bd3-9bea-b4a34d0a4d00">金卡</option>
+                  
+                </select> 
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">表类型*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="MeterTypeId" id="MeterTypeId" lay-filter="MeterTypeId" lay-verify="notDefault" lay-search>
+                  <option >全部</option>
+                  <option value="af1f8ffd-66e4-4bd3-9bea-b4a34d0a4d00">2G网络小表</option>
+                  
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">表方量*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="MeterSize"   autocomplete="off"  class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">表编号</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="MeterCode"   autocomplete="off" value="" class="layui-input"></input>
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">表起数*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="BeginNum"   autocomplete="off" lay-verify="required" value="" class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">                
+                <label class="layui-form-label ">进气方向*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="GasDirection" id="GasDirection" lay-filter="GasDirection" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">装表位置</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="MeterAddress" value="" autocomplete="off" class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">表出厂日期*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="MeterDate" id="MeterDate" lay-verify="date" class="layui-input"></input>
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">分摊表编码</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="Pid" id="Pid" lay-filter="Pid" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">分摊方式</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="CalculateType" id="CalculateType" lay-filter="CalculateType" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">分摊金额</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="CalculateValue" value="" autocomplete="off" class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">原系统表编号</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="OldNo" id="OldNo" lay-filter="OldNo" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">原系统其他信息</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="OldOtherInfo" value="" autocomplete="off" class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">排序号</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="SortNum"   autocomplete="off" value="" class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">备注</label>
+              </div>
+              <div class="layui-col-sm10">
+                <textarea type="text" name="Description" value="" autocomplete="off" class="layui-textarea"></textarea>
+              </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <input type="button" lay-submit lay-filter="LAY-biaoju-submit" id="LAY-biaoju-submit" value="确认">
+            </div>
+          </div>
+        
+        </div>
+        <div class="layui-tab-item">
+          <div id="lock-fireDetail-from" lay-filter="lock-fireDetail-from" class="layui-form" style="border-top: 1px solid #ccc; padding: 20px 0 0 0;">
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">点火时间</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="FireDate" id="FireDate" lay-filter="FireDate"  autocomplete="off" class="layui-input"></input>
+              </div>
+
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">点火人</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="FireMembers"  id="FireMembers"  autocomplete="off"  class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">点火状态*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="FireResult" id="FireResult" lay-filter="FireResult"  lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">排序号</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="FireSortNum"   autocomplete="off"  class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">备注</label>
+              </div>
+              <div class="layui-col-sm10">
+                <textarea type="text" name="FireDescription"  autocomplete="off" class="layui-textarea"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>   
+  
+  <div id="lock-meterFireAdd-from" lay-filter="lock-meterFireAdd-from" class="layui-form" style="border-top: 1px solid #ccc;display: none; padding: 20px 0 0 0;">
+    <div class="layui-form-item">
+      <div class="layui-col-sm2">
+        <label class="layui-form-label ">点火时间</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="text" name="NewFireDate" id="NewFireDate" lay-filter="NewFireDate"  autocomplete="off" class="layui-input"></input>
+      </div>
+
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">点火人</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="text" name="FireMembers"  id="FireMembers"  autocomplete="off"  class="layui-input"></input>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">点火状态*</label>
+      </div>
+      <div class="layui-col-sm4">
+        <select name="NewFireResult" id="NewFireResult" lay-filter="NewFireResult" lay-verify="notNull"  lay-search>
+          <option ></option>
+        </select> 
+      </div>
+      <div class="layui-col-sm2">
+        <label class="layui-form-label">排序号</label>
+      </div>
+      <div class="layui-col-sm4">
+        <input type="text" name="FireSortNum"   autocomplete="off"  class="layui-input"></input>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-col-sm2">
+        <label class="layui-form-label ">备注</label>
+      </div>
+      <div class="layui-col-sm10">
+        <textarea type="text" name="FireDescription"  autocomplete="off" class="layui-textarea"></textarea>
+      </div>
+    </div>
+    <div class="layui-form-item layui-hide">
+        <input type="button" lay-submit lay-filter="LAY-fire-submit" id="LAY-fire-submit" value="确认">
+    </div>
+  </div>
+
+  <div id="lock-meterEdit-from" lay-filter="lock-meterEdit-from" class="layui-form" style="border-top: 1px solid #ccc;display: none; padding: 20px 0 0 0;">
+    <div class="layui-tab layui-tab-card" lay-filter="meterEdit-tab">
+      <ul class="layui-tab-title">
+        <li class="layui-this" lay-id="meterInfo">表具信息</li>
+        <li lay-id="fireInfo">点火信息</li>
+      </ul>
+      <div class="layui-tab-content" >
+        <div class="layui-tab-item layui-show">
+          <div id="lock-meterEditDetail-from" lay-filter="lock-meterEditDetail-from" class="layui-form" style="border-top: 1px solid #ccc; padding: 20px 0 0 0;">
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">地址*</label>
+              </div>
+              <div class="layui-col-sm8">
+                <input type="text" name="Address"  autocomplete="off" disabled  lay-verify="notNull" class="layui-input"></input>
+              </div>
+              <div class="layui-col-sm2">
+                <button class="layui-btn LAY-edit-address-search-submit" lay-filter="LAY-edit-address-search-submit" id="LAY-edit-address-search-submit"
+                  name="LAY-edit-address-search-submit">
+                  <i class="layui-icon">&#xe615;</i> 查询
+                </button>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">表状态*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="EditMeterStatus" id="EditMeterStatus" lay-filter="EditMeterStatus" lay-verify="notDefault" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">付费模式*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="EditMeterPayMode" id="EditMeterPayMode" lay-filter="EditMeterPayMode" lay-verify="notDefault" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">阶梯人数*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="StepFamilyMembers"   autocomplete="off" lay-verify="number" class="layui-input"></input>
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">阶梯结束时间*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="EditStepFamilyMemberEndDate" id="EditStepFamilyMemberEndDate" lay-filter="EditStepFamilyMemberEndDate" lay-verify="date"  class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">价格标准*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="EditPriceTypeId" id="EditPriceTypeId" lay-filter="EditPriceTypeId" lay-verify="notDefault" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">表厂家*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="MeterFactoryId" id="MeterFactoryId" lay-filter="MeterFactoryId" lay-verify="notDefault" lay-search>
+                  <option >全部</option>
+                  <option value="af1f8ffd-66e4-4bd3-9bea-b4a34d0a4d00">金卡</option>
+                  
+                </select> 
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">表类型*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="MeterTypeId" id="MeterTypeId" lay-filter="MeterTypeId" lay-verify="notDefault" lay-search>
+                  <option >全部</option>
+                  <option value="af1f8ffd-66e4-4bd3-9bea-b4a34d0a4d00">2G网络小表</option>
+                  
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">表方量*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="MeterSize"   autocomplete="off"  class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">表编号</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="MeterCode"   autocomplete="off" value="" class="layui-input"></input>
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">表起数*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="BeginNum"   autocomplete="off" lay-verify="required" value="" class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">                
+                <label class="layui-form-label ">进气方向*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="EditGasDirection" id="EditGasDirection" lay-filter="EditGasDirection" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">装表位置</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="MeterAddress" value="" autocomplete="off" class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">表出厂日期*</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="MeterDate" lay-verify="date" class="layui-input"></input>
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">分摊表编码</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="Pid" id="Pid" lay-filter="Pid" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">分摊方式</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="EditCalculateType" id="EditCalculateType" lay-filter="EditCalculateType" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">分摊金额</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="CalculateValue" value="" autocomplete="off" class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">原系统表编号</label>
+              </div>
+              <div class="layui-col-sm4">
+                <select name="OldNo" id="OldNo" lay-filter="OldNo" lay-search>
+                  <option ></option>
+                </select> 
+              </div>
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">原系统其他信息</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="OldOtherInfo" value="" autocomplete="off" class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label">排序号</label>
+              </div>
+              <div class="layui-col-sm4">
+                <input type="text" name="SortNum"   autocomplete="off" value="" class="layui-input"></input>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <div class="layui-col-sm2">
+                <label class="layui-form-label ">备注</label>
+              </div>
+              <div class="layui-col-sm10">
+                <textarea type="text" name="Description" value="" autocomplete="off" class="layui-textarea"></textarea>
+              </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <input type="button" lay-submit lay-filter="LAY-biaoju-Edit-submit" id="LAY-biaoju-Edit-submit" value="确认">
+            </div>
+          </div>
+        </div>
+        <div class="layui-tab-item">
+          <div id="lock-fireDetail-from" lay-filter="lock-fireDetail-from" class="layui-form" style="border-top: 1px solid #ccc; padding: 20px 0 0 0;">
+            <div class="layui-elem-quote layui-row ">
+              
+                <div class="layui-form-item">
+                  <button class="layui-btn layuiadmin-btn-meterFireAdd" id="LAY-fire-add" data-type="add">添加</button>
+                </div>
+              
+            </div>
+            <table id="LAY-MeterFireTable" lay-filter="LAY-MeterFireTable"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="lock-address-from" lay-filter="lock-address-from" class="layui-form" style="border-top: 1px solid #ccc;display: none">
+    <fieldset class="layui-elem-field" style="margin: 20px;">
+      <div class="layui-row">
+        <div class="layui-col-sm12">
+          <table id="LAY-MeterAddressTable" lay-filter="LAY-MeterAddressTable"></table>
+        </div>
+      </div>
+    </fieldset>
+    <div class="layui-form-item layui-hide">
+      <input type="button" lay-submit lay-filter="LAY-address-confirm-submit" id="LAY-address-confirm-submit" value="确认">
+    </div>
+  </div> 
+
+  
+  <script src="../../../layuiadmin/layui/layui.js"></script>
+  <script src="../../../layuiadmin/xitongguanli/biaojuguanli.js"></script>
+</body>
+
+</html> 

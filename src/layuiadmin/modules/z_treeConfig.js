@@ -1,8 +1,8 @@
 /*
- * @Author: hongChuan Zhang 
- * @Date: 2018-10-25 16:52:39 
+ * @Author: hongChuan Zhang
+ * @Date: 2018-10-25 16:52:39
  * @Last Modified by: hongChuan Zhang
- * @Last Modified time: 2018-11-05 09:45:40
+ * @Last Modified time: 2018-11-16 09:03:00
  */
 
 layui.define(["form", "jquery_ztree", "jquery_ztree_excheck"], function(
@@ -35,11 +35,10 @@ layui.define(["form", "jquery_ztree", "jquery_ztree_excheck"], function(
     //$.extend(_treeSeting, treeSeting);
 
     var op = Object.assign({}, _treeSeting, treeSeting);
-    console.log(op, "最终配置数据~~~~~");
+
     var z_tree = {
       zTreeObj: {},
       renderTree: function(treeData, el) {
-        console.log(treeData, "传进来的数据");
         if (!Array.isArray(treeData)) {
           $("#" + el)
             .html("<span class='nullTreebox'>数据格式错误!</span>")

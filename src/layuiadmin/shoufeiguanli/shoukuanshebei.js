@@ -312,7 +312,7 @@ layui
       $.ajax({
         type: "get",
         url:
-        layui.setter.revenueUrl + "/api/BusinessHallDevice/query/key?Data.key="+para.Me.Id+"&Method=key",
+        layui.setter.revenueUrl + "/api/BusinessHallDevice/query/key?Data.Id="+para.Me.Id+"&Method=key",
         async: true,
         success: function(data) {
           console.info(para.BusinessHall_Name)

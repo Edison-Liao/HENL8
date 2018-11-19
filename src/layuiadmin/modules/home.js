@@ -1,3 +1,9 @@
+/*
+ * @Author: hongChuan Zhang
+ * @Date: 2018-11-16 10:53:12
+ * @Last Modified by: hongChuan Zhang
+ * @Last Modified time: 2018-11-16 11:26:56
+ */
 //
 layui
   .config({
@@ -124,8 +130,7 @@ layui
           });
         },
         server: {
-          getNav: function () {
-            
+          getNav: function() {
             $.ajax({
               type: "get",
               url: layui.setter.baseUrl + "/api/Navigation/treeview/menuLink",
@@ -144,6 +149,17 @@ layui
                     Title: "租户管理",
                     Url: "/platform/tenant?rad=1GpEZITN"
                   });
+                  navData[0].Children.push({
+                    Code: "07",
+                    Flag: "nav",
+                    Icon: "true",
+                    Id: "002",
+                    IsExpand: true,
+                    Key: "003",
+                    ParentId: null,
+                    Title: "上传测试",
+                    Url: "/tpl/from/updata?rad=1GpEZITN"
+                  });
                   $("#navBox").html(renderNav(navData));
                   element.init();
                 } else {
@@ -160,29 +176,29 @@ layui
           }
         },
         render: {
-          showLoginName: function(data) {
-            var name = data && data.name ? data.name : "sysadmin";
-            $("#currentName").html(name);
-          },
-          showStateInfo: function(data) {
-            console.log(data, "回调数据");
-            layer.open({
-              title: "信息!",
-              content: "您未登录请先登录!",
-              icon: 2,
-              offset: "200px",
-              yes: function(index, layero) {
-                console.log("点击了回调");
-                window.location = "./login.html";
-              },
-              cancel: function() {
-                //右上角关闭回调
-                console.log("取消关闭");
-                //return false 开启该代码可禁止点击该按钮关闭
-                window.location = "./login.html";
-              }
-            });
-          }
+          // showLoginName: function(data) {
+          //   var name = data && data.name ? data.name : "sysadmin";
+          //   $("#currentName").html(name);
+          // },
+          // showStateInfo: function(data) {
+          //   console.log(data, "回调数据");
+          //   layer.open({
+          //     title: "信息!",
+          //     content: "您未登录请先登录!",
+          //     icon: 2,
+          //     offset: "200px",
+          //     yes: function(index, layero) {
+          //       console.log("点击了回调");
+          //       window.location = "./login.html";
+          //     },
+          //     cancel: function() {
+          //       //右上角关闭回调
+          //       console.log("取消关闭");
+          //       //return false 开启该代码可禁止点击该按钮关闭
+          //       window.location = "./login.html";
+          //     }
+          //   });
+          // }
         },
         checkLogionState: function() {
           manager

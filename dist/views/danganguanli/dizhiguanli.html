@@ -84,32 +84,40 @@
             <label class="layui-form-label">所属楼栋</label>
           </div>
           <div class="layui-col-sm4">
-            <select name="Area_Id_Building" id="Area_Id_Building" lay-filter="Area_Id_Building" disabled="true" lay-search>
+            <select name="Area_Id_Building" id="Area_Id_Building" lay-filter="Area_Id_Building"  lay-search>
               <option ></option>
             </select> 
           </div>
           <div class="layui-col-sm2">
-            <label class="layui-form-label ">备注</label>
+            <label class="layui-form-label ">房屋面积</label>
           </div>
           <div class="layui-col-sm4">
-            <input type="text" name="Description" value="" autocomplete="off" class="layui-input"></input>
+            <input type="text" name="RoomSize" value="" autocomplete="off" class="layui-input"></input>
           </div>
         </div>
 
+        <div class="layui-form-item">
+          <div class="layui-col-sm2">
+            <label class="layui-form-label ">备注</label>
+          </div>
+          <div class="layui-col-sm10">
+            <input type="text" name="Description" value="" autocomplete="off" class="layui-input"></input>
+          </div>
+        </div>
         
         <div class="layui-form-item">
           <div class="layui-col-sm2">
             <label class="layui-form-label ">单元号</label>
           </div>
           <div class="layui-col-sm4">
-            <input type="text" name="UnitNo" id="UnitNo" lay-filter="UnitNo"  value="" disabled="true" autocomplete="off" class="layui-input"></input>
+            <input type="text" name="UnitNo" id="UnitNo" lay-filter="UnitNo"    autocomplete="off" class="layui-input"></input>
           </div>
 
           <div class="layui-col-sm2">
             <label class="layui-form-label">楼层号</label>
           </div>
           <div class="layui-col-sm4">
-            <input type="text" name="FloorNo"  id="FloorNo" lay-filter="FloorNo" disabled="true" autocomplete="off" value="" class="layui-input"></input>
+            <input type="text" name="FloorNo"  id="FloorNo" lay-filter="FloorNo"  autocomplete="off"  class="layui-input"></input>
           </div>
         </div>
         <div class="layui-form-item">
@@ -117,7 +125,7 @@
             <label class="layui-form-label ">房号</label>
           </div>
           <div class="layui-col-sm4">
-            <input type="text" name="RoomNo"  id="RoomNo" lay-filter="RoomNo" value="" disabled="true" autocomplete="off" class="layui-input"></input>
+            <input type="text" name="RoomNo"  id="RoomNo" lay-filter="RoomNo" autocomplete="off" class="layui-input"></input>
           </div>
           <div class="layui-col-sm2">
             <label class="layui-form-label">详细地址*</label>
@@ -145,18 +153,6 @@
             <input type="button" lay-submit lay-filter="LAY-dizhi-add-submit" id="LAY-dizhi-add-submit" value="确认">
         </div>
   </div>
-  <div id="lock-from-xiaoqu" lay-filter="lock-from-xiaoqu" class="layui-form" style="border-top: 1px solid #ccc;display: none; padding: 20px 0 0 0;">
-    <fieldset class="layui-elem-field" style="margin: 20px;">
-      <div class="layui-form-item">
-        <div class="layui-col-sm12">
-          <table id="LAY-xiaoqu-Table" lay-filter="LAY-xiaoqu-Table"></table>
-        </div>
-      </div>
-    </fieldset>
-    <div class="layui-form-item layui-hide">
-        <input type="button" lay-submit lay-filter="LAY-xiaoqu-confirm-submit" id="LAY-xiaoqu-confirm-submit" value="确认">
-    </div>
-  </div>  
 
   </div>
   <script src="../../../layuiadmin/layui/layui.js"></script>

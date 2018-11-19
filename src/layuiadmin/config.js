@@ -35,8 +35,6 @@ layui.define(["laytpl", "layer", "element", "util"], function(exports) {
     huibleUrl: "https://huizhongcloud.com/blemanager-dev",
     //授权地址
     authorityUrl: "http://192.168.5.103:3851/",
-    //重新规划
-    readmeterplanUrl:"http://192.168.5.32:3818/",
     //自定义响应字段
     response: {
       statusName: "IsSucceed", //数据状态的字段名称

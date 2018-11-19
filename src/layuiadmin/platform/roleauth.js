@@ -163,7 +163,7 @@ layui
               .then(function(data) {
                 if (common.appResult.isSucceeded(data)) {
                   //渲染树
-                  console.log(data.Result.TreeNodes);
+
                   var nodeData = data.Result.TreeNodes;
 
                   function currData(data, userflage) {
@@ -322,32 +322,21 @@ layui
             var dataBean = layui.consts.basePostData();
             dataBean.Data = data;
             var str1 = JSON.stringify(dataBean);
-            layer.load();
-            $.ajax({
-              type: "put",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              data: str1,
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                if (data.IsSucceed) {
-                  console.log(data.Result, "当前角色点");
+
+            common
+              .ajaxFun("get", urlID, str1)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
                   layer.msg("更新权限成功!", { icon: 6 });
                 } else {
                   layer.msg("更新权限数据失败! " + data.Errors[0].Message, {
                     icon: 5
                   });
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           },
           getNodedata: function(flage, id) {
             var urlID = "";
@@ -358,19 +347,10 @@ layui
             } else {
               return;
             }
-
-            $.ajax({
-              type: "get",
-              url: layui.setter.baseUrl + urlID,
-              dataType: "json",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-              },
-              success: function(data) {
-                layer.closeAll();
-                console.log(data);
-                if (data.IsSucceed) {
+            common
+              .ajaxFun("get", urlID)
+              .then(function(data) {
+                if (common.appResult.isSucceeded(data)) {
                   auth.baseData.nodeData = data.Result;
                   var dataNode = data.Result;
                 } else {
@@ -378,12 +358,10 @@ layui
                     icon: 5
                   });
                 }
-              },
-              error: function(err) {
-                layer.closeAll();
-                layer.msg("数据操作失败", { icon: 5 });
-              }
-            });
+              })
+              .fail(err => {
+                console.log(err);
+              });
           }
         },
         render: {

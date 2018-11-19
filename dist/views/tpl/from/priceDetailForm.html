@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>价格明细新增或编辑</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../../layuiadmin/layui/css/layui.css" media="all">
+</head>
+
+<body>
+    <div class="layui-form" lay-filter="layuiadmin-form-pricetypefiles" id="layuiadmin-form-pricetypefiles" style="padding: 20px 50px 0 0;">
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">基础价格</label>
+            <div class="layui-input-inline">
+                <input type="text" name="BasePrice" lay-verify="number" placeholder="请输入基础价格" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label">是否启用阶梯</label>
+            <div class="layui-input-inline">
+                <select name="IsLadder" lay-filter="IsLadder" lay-verify="required" id='IsLadder'>
+                    <option value=""></option>
+                    <option value="true">是</option>
+                    <option value="false">否</option>
+                </select>
+            </div>
+        </div>
+        <!--阶梯类型: 当启用阶梯时，该值必填 -->
+        <div class="layui-form-item layui-inline" style="display:none" id="PriceLadderTypeDiv">
+            <label class="layui-form-label ">阶梯类型</label>
+            <div class="layui-input-inline">
+                <select name="PriceLadderType" lay-filter='PriceLadderType' lay-verify="required" id='PriceLadderType'>
+                    <!-- <option value="1">自然年</option> -->
+                    <!-- <option value="2">周期</option> -->
+                </select>
+            </div>
+        </div>
+        <!-- 阶梯周期值，当阶梯类型为周期时，该值有效，且为必填项 -->
+        <div class="layui-form-item layui-inline" style="display:none" id="LadderCycleDiv">
+            <label class="layui-form-label">阶梯周期值</label>
+            <div class="layui-input-inline">
+                <input type="text" id='LadderCycleValue' name="LadderCycleValue" lay-verify="number" placeholder="请输入阶梯周期值"
+                    autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">是否启用滞纳金(只针对后付费)</label>
+            <div class="layui-input-inline">
+                <select name="IsSurcharge" lay-filter='IsSurcharge' lay-verify="required" id='IsSurcharge'>
+                    <option value=""></option>
+                    <option value="true">是</option>
+                    <option value="false">否</option>
+                </select>
+            </div>
+        </div>
+        <!-- 滞纳金计算方式 “固定值”、“按比例”，当启用滞纳金额后，该值必填 -->
+        <div class="layui-form-item layui-inline" style="display:none" id="priceSurchargeDiv">
+            <label class="layui-form-label ">滞纳金计算方式</label>
+            <div class="layui-input-inline">
+                <select name="priceSurcharge" lay-verify="required" id='priceSurcharge'>
+                    <!-- <option value="1">固定值</option> -->
+                    <!-- <option value="2">按比例</option> -->
+                </select>
+            </div>
+        </div>
+        <!-- 滞纳金额开始日期 “按账务日”，“按录入日”，当启用滞纳金额后，该值必填 -->
+        <div class="layui-form-item layui-inline" style="display:none" id='PriceSurchargeStartDiv'>
+            <label class="layui-form-label ">滞纳金额开始日期</label>
+            <div class="layui-input-inline">
+                <select name="PriceSurchargeStart" lay-verify="required" id='PriceSurchargeStart'>
+                    <!-- <option value="1">按账务日</option> -->
+                    <!-- <option value="2">按录入日</option> -->
+                </select>
+            </div>
+        </div>
+        <!-- 滞纳金额值，当启用滞纳金额后，该值必填  -->
+        <div class="layui-form-item layui-inline" style="display:none" id='PriceSurchargeValueDiv'>
+            <label class="layui-form-label ">滞纳金额值</label>
+            <div class="layui-input-inline">
+                <input type="text" id='PriceSurchargeValue' name="PriceSurchargeValue" lay-verify="number" placeholder="请输入滞纳金额值"
+                    autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <!-- 滞纳金额延迟月，当启用滞纳金额后，该值必填  -->
+        <div class="layui-form-item layui-inline" style="display:none" id='PriceSurchargeDelayMonthDiv'>
+            <label class="layui-form-label ">滞纳金额延迟月</label>
+            <div class="layui-input-inline">
+                <input type="text" id='PriceSurchargeDelayMonth' name="PriceSurchargeDelayMonth" lay-verify="number"
+                    placeholder="请输入滞纳金额延迟月" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <!-- 滞纳金额延迟天，当启用滞纳金额后，该值必填 -->
+        <div class="layui-form-item layui-inline" style="display:none" id='PriceSurchargeDelayDayDiv'>
+            <label class="layui-form-label ">滞纳金额延迟天</label>
+            <div class="layui-input-inline">
+                <input type="text" id='PriceSurchargeDelayDay' name="PriceSurchargeDelayDay" lay-verify="number"
+                    placeholder="请输入滞纳金额延迟天" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">价格开始日期</label>
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" lay-verify="required" placeholder="点击选择价格开始日期" id="PriceStartDateTime"
+                    name="PriceStartDateTime">
+            </div>
+        </div>
+        <div class="layui-form-item layui-inline">
+            <label class="layui-form-label ">价格结束日期</label>
+            <div class="layui-input-inline">
+                <input type="text" lay-verify="required" placeholder="点击选择价格结束日期" class="layui-input" id="PriceEndDateTime"
+                    name="PriceEndDateTime">
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-hide">
+            <input type="button" lay-submit lay-filter="LAY-pricetype-files-submit" id="LAY-pricetype-files-submit"
+                value="确认">
+        </div>
+    </div>
+
+    <script src="../../../layuiadmin/layui/layui.js"></script>
+    <script>
+        // function gradeChange() {
+        //     var objS = document.getElementById("IsLadder");
+        //     var grade = objS.options[objS.selectedIndex].lx;
+        //     console.log(grade)
+        // }
+        layui.config({
+            base: '../../../layuiadmin/' //静态资源所在路径
+        }).extend({
+            index: 'lib/index' //主入口模块
+        }).use(['index', 'useradmin', 'form', 'utils', 'laydate'], function () {
+            //日期时间选择器
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#PriceStartDateTime',
+                type: 'datetime',
+            });
+            laydate.render({
+                elem: '#PriceEndDateTime',
+                type: 'datetime'
+            });
+            //new Date("2018-03-08 00:00:00").toISOString()
+            var $ = layui.$,
+                form = layui.form,
+                utils = layui.utils,
+                params = utils.getRequest(),
+                passParams;
+            //当启用阶梯时，阶梯类型必填
+            form.on('select(IsLadder)', function (data) {
+                var selectV = data.value;
+                hideOrShowLadderType(selectV)
+            });
+            //当阶梯类型为周期时，阶梯周期值有效，且为必填项
+            form.on('select(PriceLadderType)', function (data) {
+                hideOrShowLadderCycle()
+            });
+            //当启用滞纳金时，这些值为必填项
+            form.on('select(IsSurcharge)', function (data) {
+                var selectV = data.value;
+                hideOrShowSurcharge(selectV)
+            });
+            function hideOrShowLadderType(value) {
+                if (value === 'true') {//是否启用阶梯
+                    //可见且必填
+                    $("#PriceLadderTypeDiv").css('display', 'inline-block')
+                    $("#PriceLadderType").attr('lay-verify', 'required')
+                } else {
+                    $("#PriceLadderTypeDiv").css('display', 'none')
+                    $("#LadderCycleDiv").css('display', 'none')
+                    $("#PriceLadderType").attr('lay-verify', '')
+                    $("#LadderCycleValue").attr('lay-verify', '')
+                }
+            };
+            function hideOrShowLadderCycle() {
+                var value = $("#PriceLadderType option:selected").text();
+                if (value.indexOf('周期') != -1) {//阶梯类型是否是周期
+                    $("#LadderCycleDiv").css('display', 'inline-block')
+                    $("#LadderCycleValue").attr('lay-verify', 'number')
+                } else {
+                    $("#LadderCycleDiv").css('display', 'none')
+                    $("#LadderCycleValue").attr('lay-verify', '')
+                }
+            };
+            function hideOrShowSurcharge(value) {
+                if (value === 'true') {//是否启用滞纳金
+                    $("#priceSurchargeDiv").css('display', 'inline-block')
+                    $("#PriceSurchargeStartDiv").css('display', 'inline-block')
+                    $("#PriceSurchargeValueDiv").css('display', 'inline-block')
+                    $("#PriceSurchargeDelayMonthDiv").css('display', 'inline-block')
+                    $("#PriceSurchargeDelayDayDiv").css('display', 'inline-block')
+
+                    $("#priceSurcharge").attr('lay-verify', 'required')
+                    $("#PriceSurchargeStart").attr('lay-verify', 'required')
+                    $("#PriceSurchargeValue").attr('lay-verify', 'number')
+                    $("#PriceSurchargeDelayMonth").attr('lay-verify', 'number')
+                    $("#PriceSurchargeDelayDay").attr('lay-verify', 'number')
+                } else {
+                    $("#priceSurchargeDiv").css('display', 'none')
+                    $("#PriceSurchargeStartDiv").css('display', 'none')
+                    $("#PriceSurchargeValueDiv").css('display', 'none')
+                    $("#PriceSurchargeDelayMonthDiv").css('display', 'none')
+                    $("#PriceSurchargeDelayDayDiv").css('display', 'none')
+
+                    $("#priceSurcharge").attr('lay-verify', '')
+                    $("#PriceSurchargeStart").attr('lay-verify', '')
+                    $("#PriceSurchargeValue").attr('lay-verify', '')
+                    $("#PriceSurchargeDelayMonth").attr('lay-verify', '')
+                    $("#PriceSurchargeDelayDay").attr('lay-verify', '')
+                }
+            };
+
+            // 服务交互
+            var request = {};
+
+            // 事件
+            var active = {};
+            // 渲染
+            var render = {
+
+                // 渲染选择 `阶梯类型,滞纳金类型,滞纳金开启日类型` 下拉菜单
+                selectPriceType(params) {
+                    var renderCode1 = '<option value=""></option>'; // 待渲染的字符串
+                    var renderCode2 = '<option value=""></option>'; // 待渲染的字符串
+                    var renderCode3 = '<option value=""></option>'; // 待渲染的字符串
+                    passParams1 = JSON.parse(decodeURIComponent(params.ladderType));
+                    passParams2 = JSON.parse(decodeURIComponent(params.surchargeType));
+                    passParams3 = JSON.parse(decodeURIComponent(params.surchargeStartType));
+                    // 赋值阶梯类型
+                    passParams1.forEach(function (item) {
+                        renderCode1 += '<option value= ' + item.Value + '>' + item.Text + '</option>';
+                    });
+                    // 赋值滞纳金类型
+                    passParams2.forEach(function (item) {
+                        renderCode2 += '<option value= ' + item.Value + '>' + item.Text + '</option>';
+                    });
+                    // 赋值滞纳金开启日类型
+                    passParams3.forEach(function (item) {
+                        renderCode3 += '<option value= ' + item.Value + '>' + item.Text + '</option>';
+                    });
+                    $('#PriceLadderType').append(renderCode1);
+                    $('#priceSurcharge').append(renderCode2);
+                    $('#PriceSurchargeStart').append(renderCode3);
+                    form.render('select');
+                    if (params.type === "edit") {
+                        passParams = {
+                            data: JSON.parse(decodeURIComponent(params.data))
+                        };
+                        console.log(passParams, "pass")
+                        // 赋值给编辑框
+                        var passFields = $.extend({}, passParams.data[0], passParams.data[0].Me, {
+                            IsLadder: "" + Boolean(passParams.data[0].Me.IsLadder),
+                            IsSurcharge: "" + Boolean(passParams.data[0].Me.IsSurcharge),
+                            PriceStartDateTime: layui.util.toDateString(passParams.data[0].Me.PriceStartDateTime),
+                            PriceEndDateTime: layui.util.toDateString(passParams.data[0].Me.PriceEndDateTime),
+                        });
+                        hideOrShowLadderType(passFields.IsLadder)
+                        hideOrShowLadderCycle()
+                        hideOrShowSurcharge(passFields.IsSurcharge)
+                        form.val("layuiadmin-form-pricetypefiles", passFields);
+                    }
+                }
+            }
+
+            // 渲染`阶梯类型,滞纳金类型,滞纳金开启日类型`下拉菜单
+            render.selectPriceType(params);
+        })
+    </script>
+</body>
+
+</html>

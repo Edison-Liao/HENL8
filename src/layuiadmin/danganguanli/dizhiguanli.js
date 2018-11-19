@@ -25,32 +25,6 @@ layui
     var readPtStatus = {}
     //服务交互  /api/Area/query/all?Data.AreaType=
     var dizhiSeverEvent = {
-      getReadPoint: function(id){
-        common.ajaxFun("get", "/api/ReadingPoint/query/key?Data.id="+id+"&Method=key",'',option).then(function(res) {
-          if (common.appResult.isSucceeded(res)) {
-            
-            res.Result.Me.Name
-          } else {
-            common.appResult.loadErrorText(res);
-          }
-        })
-        .fail(err => {
-          console.log(err);
-        });
-      },
-      getArea: function(id){
-        common.ajaxFun("get", "/api/Area/query/key?Data.id="+id+"&Method=key",'',option).then(function(res) {
-          if (common.appResult.isSucceeded(res)) {
-            
-            res.Result.Me.Name
-          } else {
-            common.appResult.loadErrorText(res);
-          }
-        })
-        .fail(err => {
-          console.log(err);
-        });
-      },
       getAllAvailableArea: function(data){
         common.ajaxFun("get", "/api/Area/query/all?Data.AreaType="+data.type+"&Data.Status="+data.status+"&Method=all",'',option).then(function(res) {
           if (common.appResult.isSucceeded(res)) {
@@ -152,7 +126,7 @@ layui
         dataBean.Data = data;
         dataBean.Method="insert";
         var str1 = JSON.stringify(dataBean);
-        console.log(str1);
+        //console.log(str1);
         common
           .ajaxFun("post", "/api/address/insert", str1,option)
           .then(function(res) {
@@ -263,17 +237,22 @@ layui
                 $("#Area_Id_ReadingPoint").removeAttr("disabled"); 
                 $(Area_Id_ReadingPoint).append('<option &nbsp; value='+res.Me.Area_Id_ReadingPoint+'>'+res.Area_Id_ReadingPointName+'</option>');
               }
-
-              if(res.Me.AddressType === "2" ){
+              console.info("res",res)
+              if(res.Me.AddressType == "2" ){
+                console.info("AddressType: ",res.Me.AddressType )
                  $("#Area_Id_Building").attr("disabled","disabled");
+                 $("#Area_Id_Building").attr("class","layui-btn-disabled");
                  $("#UnitNo").attr("disabled","disabled");
                  $("#FloorNo").attr("disabled","disabled");
                  $("#RoomNo").attr("disabled","disabled");
+                 form.render();
               }else{
                 $("#Area_Id_Building").removeAttr("disabled"); 
+                $("#Area_Id_Building").removeAttr("class","layui-btn-disabled");
                 $("#RoomNo").removeAttr("disabled"); 
                 $("#FloorNo").removeAttr("disabled"); 
-                $("#UnitNo").removeAttr("disabled"); 
+                $("#UnitNo").removeAttr("disabled");
+                form.render();
               }
               form.val("lock-from", {
                 "AddressStatus": res.Me.AddressStatusName == "正常"? "on": "off"
@@ -330,6 +309,9 @@ layui
         });
       },
       add: function() {
+        $("#lock-from").find('input[type=text],select,input[type=hidden]').each(function() {
+             $(this).val('');
+        });
         layer.open({
           type: 1,
           title: "添加地址",
@@ -351,15 +333,11 @@ layui
                   //console.info(field)
                   if(field.AddressType == "全部"  ){
                       layer.msg("请选择地址类型", { icon: 5 });
-
                   }else if(field.Area_Id_Village == "全部"){
                       layer.msg("请选择小区", { icon: 5 });
-                      
                   }else{
                     dizhiSeverEvent.add(field);
                   }
-                  
-                  
                 } else {
                   common.appResult.loadErrorText(res);
                 }
@@ -415,11 +393,9 @@ layui
                     return d.Me.Address;
                   } },
                 { field: "Area_Id_ReadingPoint",  title: "抄表点" ,templet: function(d) {
-                    //return dizhiSeverEvent.getReadPoint(d.Me.Area_Id_ReadingPoint)
                     return d.Area_Id_ReadingPointName
                   }},
                 { field: "Area_Id_Village",  title: "小区" ,templet: function(d) {
-
                     return d.Area_Id_VillageName;
                   }}, 
                 { field: "Area_Id_Building",  title: "楼栋" ,templet: function(d) {

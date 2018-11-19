@@ -196,7 +196,7 @@ layui
         $.ajax({
           type: "get",
           url:
-            layui.setter.revenueUrl + "/api/BusinessHall/query/key?Data.key="+para.Me.Id+"&Method=key",
+            layui.setter.revenueUrl + "/api/BusinessHall/query/key?Data.Id="+para.Me.Id+"&Method=key",
 
           async: true,
           data: str1,
